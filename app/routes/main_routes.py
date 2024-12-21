@@ -5,4 +5,4 @@ main_routes = Blueprint('main', __name__)
 
 @main_routes.route('/')
 def home():
-    return "Bienvenue sur la page d'accueil ! Test 4"
+    return "Bienvenue sur la page d'accueil !"
