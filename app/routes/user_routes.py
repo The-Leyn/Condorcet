@@ -2,6 +2,7 @@
 from flask import Blueprint, jsonify, render_template, request
 from app.models.user import UserModel
 
+
 # Définir le blueprint
 user_routes = Blueprint('user', __name__)
 
@@ -22,15 +23,14 @@ def get_user(id_user):
         return render_template("profile.html", user=user)
     return jsonify({"error": "User not found"}), 404
 
-@user_routes.route('/add_user', methods=['GET', 'POST'])
-def add_user():
-    """Afficher le formulaire ou ajouter un nouvel utilisateur."""
+@user_routes.route('/register', methods=['GET', 'POST'])
+def register():
     from flask import request, render_template
     from app.models.user import UserModel
 
     if request.method == 'GET':
         # Affiche le formulaire
-        return render_template('add_user.html')
+        return render_template('register.html')
 
     if request.method == 'POST':
         # Traite les données du formulaire
