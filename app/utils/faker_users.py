@@ -45,7 +45,7 @@ def generate_scrutin():
     question_id = ObjectId()
     
     return {
-        "question_id": question_id,  # Utiliser l'ObjectId comme question_id
+        "scrutin_id": question_id,  # Utiliser l'ObjectId comme question_id
         "created_at": start_date - timedelta(days=random.randint(0, 4)),  # Création dans un intervalle avant la start_date
         "title": fake.sentence(nb_words=6),
         "description": fake.text(max_nb_chars=100),
