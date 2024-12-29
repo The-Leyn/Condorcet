@@ -2,7 +2,7 @@ from faker import Faker
 from pymongo import MongoClient
 import random
 from datetime import datetime, timedelta
-from bson.objectid import ObjectId
+from bson import ObjectId  # Importer ObjectId pour générer des ObjectId uniques
 
 # Initialiser Faker
 fake = Faker()
@@ -40,12 +40,17 @@ def generate_scrutin():
     start_date = fake.date_time_between(start_date='-90d', end_date='now')
     end_date = start_date + timedelta(days=random.randint(1, 90))
     options = [fake.word() for _ in range(random.randint(2, 5))]
+    
+    # Créer un ObjectId pour la question
+    question_id = ObjectId()
+    
     return {
-        "question_id": f"question{random.randint(100, 999)}",
+        "question_id": question_id,  # Utiliser l'ObjectId comme question_id
+        "created_at": start_date - timedelta(days=random.randint(0, 4)),  # Création dans un intervalle avant la start_date
         "title": fake.sentence(nb_words=6),
         "description": fake.text(max_nb_chars=100),
-        "start_date": start_date.isoformat(),
-        "end_date": end_date.isoformat(),
+        "start_date": start_date,
+        "end_date": end_date,
         "options": options,
         "votes": [generate_vote(options) for _ in range(random.randint(0, 5))]
     }
