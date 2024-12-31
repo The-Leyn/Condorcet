@@ -1,6 +1,6 @@
 from flask import current_app
 from bson import ObjectId
-import hashlib
+from werkzeug.security import check_password_hash
 
 class UserModel:
     @staticmethod
@@ -22,30 +22,22 @@ class UserModel:
         result = current_app.db.users.insert_one(data)
         return result.inserted_id
     
+# Connexion
+
+class loginForm:
     @staticmethod
     def find_by_email(email):
-        """Trouver un utilisateur par son addresse email"""
-        user = current_app.db.users.find_one({"email": email})
-        return user
-    
-    @staticmethod
-    def verify_password(input_password, stored_password_hash):
-        """Vérifie si le mot de passe correspond au hachage."""
-        hashed_input = hashlib.sha256(input_password.encode()).hexdigest()
-        return hashed_input == stored_password_hash
-    
+        """Trouve un utilisateur par son email."""
+        return current_app.db.users.find_one({"email": email})
+
     @staticmethod
     def login(email, password):
-        """
-        Connecte un utilisateur via son email et mot de passe.
-        Retourne l'utilisateur si les identifiants sont corrects.
-        """
-        user = UserModel.find_by_email(email)
+        """Vérifie les informations d'identification."""
+        user = loginForm.find_by_email(email)
         if not user:
             return {"error": "Utilisateur introuvable."}, False
 
-        # Vérification du mot de passe
-        if UserModel.verify_password(password, user["password_hash"]):
+        if check_password_hash(user["password_hash"], password):
             return {"message": "Connexion réussie.", "user": user}, True
         else:
             return {"error": "Mot de passe incorrect."}, False

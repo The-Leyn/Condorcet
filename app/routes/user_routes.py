@@ -1,6 +1,8 @@
 # app/routes/user_routes.py
-from flask import Blueprint, jsonify, render_template, request
-from app.models.user import UserModel
+from flask import Blueprint, jsonify, render_template, request, redirect, url_for, flash, jsonify
+from werkzeug.security import generate_password_hash
+from app.models.user import UserModel, loginForm
+import logging
 
 # Définir le blueprint
 user_routes = Blueprint('user', __name__)
@@ -41,6 +43,8 @@ def add_user():
         # Validation simple
         if not username or not email or not password:
             return {"error": "Tous les champs sont obligatoires"}, 400
+        
+        password = generate_password_hash(password)
 
         # Insérer l'utilisateur dans la base de données
         user_data = {
@@ -51,3 +55,32 @@ def add_user():
         UserModel.create_user(user_data)
 
         return {"message": "Utilisateur ajouté avec succès"}, 201
+
+
+# Connexion by Christopher
+
+logger = logging.getLogger(__name__)
+
+@user_routes.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
+
+        # Vérification des champs vides
+        if not email or not password:
+            error_message = "Veuillez remplir tous les champs."
+            return render_template("login.html", error=error_message)
+
+        # Vérification des informations d'identification
+        response, success = loginForm.login(email, password)
+        if success:
+            # Renvoyer le message de succès dans le même template
+            success_message = "Connexion réussie !"
+            return render_template("login.html", success=success_message)
+        else:
+            return render_template("login.html", error=response["error"])
+
+    # Afficher le formulaire pour la méthode GET
+    return render_template("login.html")
+
