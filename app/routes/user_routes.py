@@ -1,5 +1,5 @@
 # app/routes/user_routes.py
-from flask import Blueprint, jsonify, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, jsonify, render_template, request, jsonify
 from werkzeug.security import generate_password_hash
 from app.models.user import UserModel, loginForm
 import logging
@@ -59,8 +59,6 @@ def add_user():
 
 # Connexion by Christopher
 
-logger = logging.getLogger(__name__)
-
 @user_routes.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -75,9 +73,7 @@ def login():
         # Vérification des informations d'identification
         response, success = loginForm.login(email, password)
         if success:
-            # Renvoyer le message de succès dans le même template
-            success_message = "Connexion réussie !"
-            return render_template("login.html", success=success_message)
+            return render_template("home.html")
         else:
             return render_template("login.html", error=response["error"])
 
