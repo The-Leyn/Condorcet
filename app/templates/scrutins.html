@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scrutins</title>
+</head>
+<body>
+  <h1>Liste des Scrutins</h1>
+  <div>
+    {% if scrutins %}
+      <ul>
+        {% for scrutin in scrutins %}
+          <li>
+            <h2>{{ scrutin.title }}</h2>
+            <p>Description : {{ scrutin.description }}</p>
+            <p>Date de début : {{ scrutin.start_date }}</p>
+            <p>Date de fin : {{ scrutin.end_date }}</p>
+            <p>Options :</p>
+            <ul>
+              {% for option in scrutin.options %}
+                <li>{{ option }}</li>
+              {% endfor %}
+            </ul>
+            <p>Créé par : {{ scrutin.user }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Aucun scrutin trouvé.</p>
+    {% endif %}
+  </div>
+</body>
+</html>
