@@ -1,1 +1,8 @@
-<h1>{{user.username}}</h1>
+<h1>@{{user.pseudonym}}</h1>
+<ul>
+    <li>Firstname : {{ user.firstname }}</li>
+    <li>Lastname : {{ user.lastname }}</li>
+    <li>Email : {{ user.email }}</li>
+    <li>Rôle : {{ user.role }}</li>
+</ul>
+<pre>{{user}}</pre>

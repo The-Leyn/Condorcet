@@ -3,6 +3,7 @@ from pymongo import MongoClient
 import random
 from datetime import datetime, timedelta
 from bson import ObjectId  # Importer ObjectId pour générer des ObjectId uniques
+from werkzeug.security import generate_password_hash
 
 # Initialiser Faker
 fake = Faker()
@@ -12,8 +13,45 @@ client = MongoClient('mongodb://localhost:27017/')
 db = client['condorcet']
 users_collection = db['users']
 
-# Générer des données faker pour la collection users
-existing_user_ids = []
+# Générer un utilisateur administrateur unique
+admin_user = {
+    "_id": ObjectId(),
+    "pseudonym": "admin",
+    "firstname": "Admin",
+    "lastname": "User",
+    "email": "admin@email.com",
+    "password_hash": generate_password_hash("adminPassword"),  # Mot de passe sécurisé
+    "is_active": True,
+    "role": "admin",
+    "scrutin": []
+}
+
+# Insérer l'administrateur dans la collection
+if not users_collection.find_one({"role": "admin"}):
+    users_collection.insert_one(admin_user)
+    print("👑 Utilisateur administrateur créé avec succès.")
+else:
+    print("⚠️ Un administrateur existe déjà dans la base de données.")
+
+# Générer un utilisateur spécifique
+specific_user = {
+    "_id": ObjectId(),
+    "pseudonym": "theRealJhon",
+    "firstname": "Jhon",
+    "lastname": "Doe",
+    "email": "jhondoe@email.com",
+    "password_hash": generate_password_hash("userPassword"),  # Mot de passe sécurisé
+    "is_active": True,
+    "role": "user",
+    "scrutin": []
+}
+
+# Insérer l'utilisateur spécifique dans la collection
+users_collection.insert_one(specific_user)
+print("👤 Utilisateur spécifique créé avec succès : theRealJhon.")
+
+# Générer des utilisateurs standards
+existing_user_ids = [admin_user["_id"], specific_user["_id"]]  # Inclure l'administrateur et l'utilisateur spécifique dans la liste des ID existants
 
 # Pré-générer les utilisateurs pour garantir qu'ils existent avant les votes
 users_data = []
@@ -26,7 +64,7 @@ for _ in range(100):
         "firstname": fake.first_name(),
         "lastname": fake.last_name(),
         "email": fake.email(),
-        "password_hash": fake.password(length=12),
+        "password_hash": generate_password_hash(fake.password(length=12)),
         "is_active": random.choice([True, False]),
         "role": "user",
         "scrutin": []
@@ -62,12 +100,20 @@ def generate_vote(options):
         "preferences": random.sample(options, k=len(options))
     }
 
-# Mettre à jour les utilisateurs avec des scrutins
+# Ajouter des scrutins pour l'administrateur et l'utilisateur spécifique
+admin_scrutins = [generate_scrutin() for _ in range(random.randint(1, 3))]  # Scrutins de l'administrateur
+specific_user_scrutins = [generate_scrutin() for _ in range(random.randint(1, 3))]  # Scrutins de l'utilisateur spécifique
+
+# Mettre à jour l'administrateur et l'utilisateur spécifique dans la base de données
+users_collection.update_one({"_id": admin_user['_id']}, {"$set": {"scrutin": admin_scrutins}})
+users_collection.update_one({"_id": specific_user['_id']}, {"$set": {"scrutin": specific_user_scrutins}})
+
+# Mettre à jour les autres utilisateurs avec des scrutins
 for user in users_data:
     user['scrutin'] = [generate_scrutin() for _ in range(random.randint(1, 3))]
     users_collection.update_one({"_id": user['_id']}, {"$set": {"scrutin": user['scrutin']}})
 
-print("Données insérées et mises à jour avec succès dans la collection 'users'!")
+print("✅ Données insérées et mises à jour avec succès dans la collection 'users'!")
 
 # Fermer la connexion
 client.close()
