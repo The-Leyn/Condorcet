@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block content %}
+<div class="login-container">
+
+    <main class="login-left">
+        <h2>Vous n’avez pas encore de compte ?</h2>
+        <p>Créez votre compte et rejoignez notre communauté ! En vous inscrivant, vous pourrez organiser vos propres scrutins avec la méthode Condorcet et participer à ceux créés par les autres utilisateurs.</p>
+        <button class="btn-border-anim"><a href="">Créer un compte</a></button>
+    </main>
+    
+    <div class="form-container">
+        <h2>Identifiez-vous</h2>
+        <form action="{{ url_for('user.register') }}" method="POST">
+            <input type="text" id="email" name="email" placeholder="VOTRE EMAIL*" required="required">
+            <input type="password" id="password" name="password" placeholder="MOT DE PASSE*" required="required">
+            
+            <button class="btn-border-anim" type="submit">Se connecter</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
