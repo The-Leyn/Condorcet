@@ -51,3 +51,41 @@ def register():
         UserModel.create_user(user_data)
 
         return {"message": "Utilisateur ajouté avec succès"}, 201
+
+@user_routes.route('/login', methods=['GET', 'POST'])
+def login():
+    from flask import request, render_template
+    from app.models.user import UserModel
+
+    if request.method == 'GET':
+        # Affiche le formulaire
+        return render_template('login.html')
+
+    if request.method == 'POST':
+        # Traite les données du formulaire
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        # Validation simple
+        if not email or not password:
+            return {"error": "Tous les champs sont obligatoires"}, 400
+
+        # Insérer l'utilisateur dans la base de données
+        user_data = {
+            "email": email,
+            "password_hash": password  # Exemple de hachage
+        }
+        UserModel.create_user(user_data)
+
+        return {"message": "Utilisateur connecté avec succès"}, 201
+
+
+@user_routes.route('/base-test', methods=['GET', 'POST'])
+def base():
+    from flask import request, render_template
+    from app.models.user import UserModel
+
+    
+    return render_template('base.html')
+
+    
