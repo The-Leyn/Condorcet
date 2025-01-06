@@ -26,6 +26,12 @@ body {
   min-height: 100vh;
 }
 
+header {
+  position: fixed;
+  background-color: var(--Background1, #262B2C);
+  width: 100%;
+}
+
 nav {
   display: flex;
   justify-content: space-between;
@@ -64,6 +70,7 @@ nav ul {
 }
 
 main {
+  margin-top: 60px;
   flex: 1;
   display: flex;
   justify-content: center;
