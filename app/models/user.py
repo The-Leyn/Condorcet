@@ -2,6 +2,7 @@ from flask import current_app
 from flask import session
 from bson import ObjectId
 from werkzeug.security import check_password_hash
+from werkzeug.security import generate_password_hash
 
 class UserModel:
     @staticmethod
@@ -54,3 +55,22 @@ class UserModel:
         """Déconnecte l'utilisateur."""
         session.clear()
         return {"message": "Déconnexion réussie."}
+    
+#INSCRIPTION    
+    @staticmethod
+    def register(user_data):
+        email = user_data["email"]
+        pseudonym = user_data["pseudonym"]
+
+        # Vérifie si un utilisateur existe
+        existing_user = current_app.db.users.find_one({
+            "$or": [{"email": email}, {"pseudonym": pseudonym}]
+        })
+
+        if existing_user:
+            raise ValueError("L'email ou le pseudonyme est déjà utilisé.")
+
+        # Hache le mot de passe
+        user_data["password_hash"] = generate_password_hash(user_data["password_hash"])
+        result = current_app.db.users.insert_one(user_data)
+        return result.inserted_id

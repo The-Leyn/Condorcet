@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+    <form action="{{ url_for('user.register') }}" method="POST">
+        <!-- Affichage des erreurs -->
+        {% if error %}
+        <div style="color: red; margin-bottom: 10px;">
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        <div>
+            <input type="text" id="lastname" name="lastname" placeholder="NOM*" required="required" >
+            <input type="text" id="firstname" name="firstname" placeholder="PRÉNOM*" required="required">
+        </div>
+        
+        <input type="text" id="pseudonyme" name="pseudonym" placeholder="PSEUDONYME*" required="required">
+        <input type="text" id="email" name="email" placeholder="VOTRE EMAIL*" required="required">
+        <input type="password" id="password" name="password" placeholder="MOT DE PASSE*" required="required" value="azertyuiop">
+        <input type="password" id="repeatpassword" name="repeatpassword" placeholder="RÉPÉTER MOT DE PASSE*" required="required" value="azertyuiop">
+        
+        <button type="submit">Se connecter</button>
+    </form>
+</body>
+</html>
