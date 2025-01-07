@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Créer votre scruntin</h2>
+    <form action="{{ url_for('scrutin.scrutin') }}" method="POST">
+        <input type="text" id="ask" name="ask" placeholder="QUEL EST VOTRE QUESTION*" required="required">
+
+        <div>
+            <input type="date" id="date-start" name="date-start" placeholder="DATE DE DÉBUT*" required="required">
+            <input type="date" id="date-end" name="date-end" placeholder="DATE DE FIN*" required="required">
+        </div>
+
+        <div>
+            <label for="description">DESCRIPTION*</label>
+            <textarea name="description" id="description" placeholder="ttt"></textarea>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -41,6 +41,8 @@ def register():
         # Validation simple
         if not username or not email or not password:
             return {"error": "Tous les champs sont obligatoires"}, 400
+        
+        
 
         # Insérer l'utilisateur dans la base de données
         user_data = {

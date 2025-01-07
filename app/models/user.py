@@ -1,8 +1,6 @@
 from flask import current_app
 from bson import ObjectId
 
-
-
 class UserModel:
     @staticmethod
     def find_by_id_user(id_user):
