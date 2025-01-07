@@ -3,20 +3,39 @@
 {% block title %}Inscription{% endblock %}
 
 {% block content %}
-<div class="form-container">
+<div class="form-container scrutin-form">
     <h2>Créer votre scruntin</h2>
     <form action="{{ url_for('scrutin.scrutin') }}" method="POST">
         <input type="text" id="ask" name="ask" placeholder="QUEL EST VOTRE QUESTION*" required="required">
 
-        <div>
+        <div class="align-input">
             <input type="date" id="date-start" name="date-start" placeholder="DATE DE DÉBUT*" required="required">
             <input type="date" id="date-end" name="date-end" placeholder="DATE DE FIN*" required="required">
         </div>
 
-        <div>
+        <div class="input-label-container">
             <label for="description">DESCRIPTION*</label>
-            <textarea name="description" id="description" placeholder="ttt"></textarea>
+            <textarea name="description" id="description" placeholder="Votre description..." required="required" rows="10"></textarea>
         </div>
+
+        <div class="input-label-container">
+            <label for="options">OPTIONS</label>
+            
+            <div class="option">
+                <input type="text" placeholder="OPTION 1*" required="required">
+                <button type="button"><img src="{{ url_for('static', filename='assets/delete.svg') }}" alt=""></button>
+            </div>
+            <div class="option">
+                <input type="text" placeholder="OPTION 2*" required="required">
+                <button type="button"><img src="{{ url_for('static', filename='assets/delete.svg') }}" alt=""></button>
+            </div>
+            <div class="option">
+                <input type="text" placeholder="OPTION 3*" required="required">
+                <button type="button"><img src="{{ url_for('static', filename='assets/delete.svg') }}" alt=""></button>
+            </div>
+        </div>
+
+        <button class="btn-border-anim" type="submit" style="margin: auto;">Valider</button>
     </form>
 </div>
 {% endblock %}

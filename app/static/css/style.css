@@ -115,7 +115,7 @@ body > main {
   flex: 1;
   display: flex;
   justify-content: center;
-  padding-top: 150px;
+  padding-top: 120px;
 }
 
 footer {
@@ -148,14 +148,41 @@ a {
     display: flex;
     flex-direction: column;
     gap: 30px;
+
+    & div.align-input {
+      gap: 30px;
+      display: flex;
+    }
   }
 
-  & div {
-    gap: 30px;
+  & .input-label-container {
     display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    & .option {
+      position: relative;
+
+      & input {
+        width: 100%;
+        padding: 10px 40px 10px 7px;
+        border: 1px solid var(--PrimaryColor, #E3B37F);
+      }
+
+      & button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        right: 10px;
+        cursor: pointer;
+      }
+    }
   }
 
-  & input {
+
+  & input, & textarea {
     width: 100%;
     background-color: var(--Background1, #262B2C);
     border: none;
@@ -175,6 +202,25 @@ a {
       font-size: 16px;
     }
   }
+
+  & textarea {
+    border: 1px solid var(--PrimaryColor, #E3B37F);
+    resize: vertical;
+    padding: 10px;
+
+    &::placeholder {
+      color: var(--PrimaryColor, #E3B37F);
+    }
+
+    &:focus{
+      border: 1px solid var(--PrimaryColor, #E3B37F);
+      outline: none;
+    }
+  }
+}
+
+.scrutin-form {
+  width: 800px;
 }
 
 .login-container {
