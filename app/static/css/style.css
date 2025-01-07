@@ -38,8 +38,46 @@ nav {
   align-items: center;
   padding: 10px 40px;
 
-  & .menu-burger{
-    display:none;
+  .menu-burger {
+    display: none;
+    position: relative;
+    width: 30px;
+    height: 20px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    
+    span {
+      position: absolute;
+      display: block;
+      width: 100%;
+      height: 2px; 
+      background-color: var(--PrimaryColor, #E3B37F);
+      transition: transform 0.3s ease, top 0.3s ease, opacity 0.3s ease;
+    }
+    span:nth-of-type(1) {
+      top: 0;
+    }
+    span:nth-of-type(2) {
+      top: 9px; 
+    }
+    span:nth-of-type(3) {
+      top: 18px;
+    }
+  
+    &.active {
+      span:nth-of-type(1) {
+        top: 9px;
+        transform: rotate(45deg); 
+      }
+      span:nth-of-type(2) {
+        opacity: 0;
+      }
+      span:nth-of-type(3) {
+        top: 9px;
+        transform: rotate(-45deg);
+      }
+    }
   }
 }
 
@@ -77,6 +115,7 @@ body > main {
   flex: 1;
   display: flex;
   justify-content: center;
+  padding-top: 150px;
 }
 
 footer {
@@ -101,7 +140,6 @@ a {
   display: flex;
   flex-direction: column;
   gap: 40px;
-  margin-top: 50px;
   color: var(--PrimaryColor, #E3B37F);
   width: 600px;
 
@@ -174,6 +212,7 @@ a {
   cursor: pointer;
   width: fit-content;
   font-size: 20px;
+  z-index: -1;
 
   &:before,
   &:after {
@@ -207,8 +246,7 @@ a {
   }
 }
 
-
-@media (max-width: 1250px) {
+@media (max-width: 600px) {
   .form-container {
     margin: 15px;
   }
@@ -217,18 +255,24 @@ a {
   }
   nav .menu-burger{
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 55px;
-    height: 35px;
+  }
 
-    & .burger:first-child{
-      border-radius:15px 0px 0px 15px;
-    }
-    & .burger{
-      width: 100%;
-      height: 5px;
-      background-color: #F1F1F1;
+  .nav-container {
+    position: fixed;
+    flex-direction: column;
+    align-items: start;
+    background-color: var(--Background1, #262B2C);
+    height: 100vh;
+    width: 40%;
+    left: -40%;
+    top: 80px;
+    padding: 20px;
+    gap: 10px;
+    transform: translateX(0);
+    transition: transform 0.2s ease-out;
+
+    &.active {
+      transform: translateX(100%);
     }
   }
 }
@@ -237,5 +281,22 @@ a {
   .form-container div {
     display: flex;
     flex-direction: column;
+  }
+}
+
+@media (max-width: 470px) {
+  .no-scroll {
+    overflow: hidden;
+  }
+
+  .nav-container {
+    width: 100%;
+    left: -100%;
+  }
+}
+
+@media (max-width: 430px) {
+  nav {
+    padding: 10px;
   }
 }

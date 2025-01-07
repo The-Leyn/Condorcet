@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Mon Site{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="{{ url_for('static', filename='js/navBar.js') }}" defer></script>
 </head>
 
 <body>
@@ -60,13 +61,13 @@
         <span class="parisienne-font">Condorcet</span>
       </a>
 
-      <div class="menu-burger">
-        <span class="burger"></span>
-        <span class="burger"></span>
-        <span class="burger"></span>
-      </div>
+      <button class="menu-burger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
 
-      <ul class="menu">
+      <ul class="nav-container">
         <li><a href="">Scrutin</a></li>
         <li><a href="">Profil</a></li>
       </ul>
