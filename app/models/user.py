@@ -1,5 +1,4 @@
-from flask import current_app
-from flask import session
+from flask import current_app, session
 from bson import ObjectId
 from werkzeug.security import check_password_hash
 

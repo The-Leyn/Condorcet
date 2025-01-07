@@ -5,4 +5,61 @@
     <li>Email : {{ user.email }}</li>
     <li>Rôle : {{ user.role }}</li>
 </ul>
+<h2>utilisateur</h2>
 <pre>{{user}}</pre>
+
+<h2>Scrutin créer par l'utilisateur @{{user.pseudonym}} :</h2>
+<pre>{{createdScrutin}}</pre>
+ <h3>Nombres de scrutins : {{createdScrutin|length}}</h3>
+{% for scrutin in createdScrutin %}
+<ul>
+    <li>Id du scrutin : {{ scrutin.scrutin_id }}</li>
+    <li>Date de création : {{ scrutin.created_at.strftime("%d/%m/%Y %H:%M:%S") }}</li>
+    <li>Date de début : {{ scrutin.start_date.strftime("%d/%m/%Y %H:%M:%S") }}</li>
+    <li>Date de fin : {{ scrutin.end_date.strftime("%d/%m/%Y %H:%M:%S") }}</li>
+    <li>Question : {{ scrutin.title }}</li>
+    <li>Description : {{ scrutin.description }}</li>
+    <li>Nombres de participants : {{ scrutin.votes|length }}</li>
+    <li>Options
+        <ol>
+            {% for option in scrutin.options%}
+                <li>{{option}}</li>
+            {% endfor %}
+        </ol>
+
+    </li>
+    {% if scrutin.start_date > current_time %}
+    <li><a href="{{ url_for('scrutin.edit_scrutin', scrutin_id=scrutin.scrutin_id|string) }}">Modifier</a></li>
+    {% elif scrutin.end_date < current_time %}
+    <li><a href="#">Résultat</a></li>
+    {% endif %}
+
+</ul>
+<hr>
+{% endfor %}
+
+<h2>Scrutin auquel l'utilisateur @{{user.pseudonym}} à participé :</h2>
+<pre>{{participatedScrutin}}</pre>
+<h3>Nombres de scrutins : {{participatedScrutin|length}}</h3>
+{% for scrutin in participatedScrutin %}
+<ul>
+    <li>Id du scrutin : {{ scrutin.scrutin_id }}</li>
+    <li>Date de création : {{ scrutin.created_at.strftime("%d/%m/%Y %H:%M:%S") }}</li>
+    <li>Date de début : {{ scrutin.start_date.strftime("%d/%m/%Y %H:%M:%S") }}</li>
+    <li>Date de fin : {{ scrutin.end_date.strftime("%d/%m/%Y %H:%M:%S") }}</li>
+    <li>Question : {{ scrutin.title }}</li>
+    <li>Créer par : @{{ scrutin.creator_pseudonym }}</li>
+    <li>Description : {{ scrutin.description }}</li>
+    <li>Nombres de participants : {{ scrutin.votes|length }}</li>
+    <li>Options
+        <ol>
+            {% for option in scrutin.options%}
+                <li>{{option}}</li>
+            {% endfor %}
+        </ol>
+
+    </li>
+</ul>
+<hr>
+{% endfor %}
+

@@ -94,7 +94,7 @@ def generate_scrutin():
     }
 
 def generate_vote(options):
-    voter_id = str(random.choice(existing_user_ids))
+    voter_id = ObjectId(random.choice(existing_user_ids))
     return {
         "voter_id": voter_id,
         "preferences": random.sample(options, k=len(options))
