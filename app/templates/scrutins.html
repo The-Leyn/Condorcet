@@ -1,34 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scrutins</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des scrutins</title>
 </head>
 <body>
-  <h1>Liste des Scrutins</h1>
-  <div>
+    <h1>Liste des scrutins</h1>
+
     {% if scrutins %}
-      <ul>
-        {% for scrutin in scrutins %}
-          <li>
-            <h2>{{ scrutin.title }}</h2>
-            <p>Description : {{ scrutin.description }}</p>
-            <p>Date de début : {{ scrutin.start_date }}</p>
-            <p>Date de fin : {{ scrutin.end_date }}</p>
-            <p>Options :</p>
-            <ul>
-              {% for option in scrutin.options %}
-                <li>{{ option }}</li>
-              {% endfor %}
-            </ul>
-            <p>Créé par : {{ scrutin.user }}</p>
-          </li>
-        {% endfor %}
-      </ul>
+        <ul>
+            {% for scrutin in scrutins %}
+                <li>
+                    <h2>{{ scrutin.title }}</h2>
+                    <p><strong>Description:</strong> {{ scrutin.description }}</p>
+                    <p><strong>Date de création:</strong> {{ scrutin.created_at }}</p>
+                    <p><strong>Date de début:</strong> {{ scrutin.start_date }}</p>
+                    <p><strong>Date de fin:</strong> {{ scrutin.end_date }}</p>
+                    <p><strong>Options:</strong> {{ scrutin.options | join(', ') }}</p>
+                    <p><strong>Votes:</strong> {{ scrutin.votes | length }}</p>
+                </li>
+            {% endfor %}
+        </ul>
     {% else %}
-      <p>Aucun scrutin trouvé.</p>
+        <p>Aucun scrutin trouvé.</p>
     {% endif %}
-  </div>
 </body>
 </html>
