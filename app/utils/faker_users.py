@@ -74,9 +74,17 @@ for _ in range(100):
 users_collection.insert_many(users_data)
 
 # Ajouter les scrutins après que les utilisateurs existent déjà
+def generate_vote(options, startDate, endDate):
+    voter_id = ObjectId(random.choice(existing_user_ids))
+    return {
+        "created_at": fake.date_time_between(start_date=startDate, end_date=endDate),  # Création dans un intervalle avant la start_date
+        "voter_id": voter_id,
+        "preferences": random.sample(options, k=len(options))
+    }
+
 def generate_scrutin():
-    start_date = fake.date_time_between(start_date='-90d', end_date='now')
-    end_date = start_date + timedelta(days=random.randint(1, 90))
+    scrutin_start_date = fake.date_time_between(start_date='-90d', end_date='now')
+    scrutin_end_date = scrutin_start_date + timedelta(days=random.randint(1, 90))
     options = [fake.word() for _ in range(random.randint(2, 5))]
     
     # Créer un ObjectId pour la question
@@ -84,21 +92,16 @@ def generate_scrutin():
     
     return {
         "scrutin_id": question_id,  # Utiliser l'ObjectId comme question_id
-        "created_at": start_date - timedelta(days=random.randint(0, 4)),  # Création dans un intervalle avant la start_date
+        "created_at": scrutin_start_date - timedelta(days=random.randint(0, 4)),  # Création dans un intervalle avant la start_date
         "title": fake.sentence(nb_words=6),
         "description": fake.text(max_nb_chars=100),
-        "start_date": start_date,
-        "end_date": end_date,
+        "start_date": scrutin_start_date,
+        "end_date": scrutin_end_date,
         "options": options,
-        "votes": [generate_vote(options) for _ in range(random.randint(0, 5))]
+        "votes": [generate_vote(options, scrutin_start_date, scrutin_end_date) for _ in range(random.randint(0, 5))]
     }
 
-def generate_vote(options):
-    voter_id = ObjectId(random.choice(existing_user_ids))
-    return {
-        "voter_id": voter_id,
-        "preferences": random.sample(options, k=len(options))
-    }
+
 
 # Ajouter des scrutins pour l'administrateur et l'utilisateur spécifique
 admin_scrutins = [generate_scrutin() for _ in range(random.randint(1, 3))]  # Scrutins de l'administrateur
