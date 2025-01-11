@@ -128,7 +128,7 @@ def edit_scrutin(scrutin_id):
 
 
 
-@scrutin_routes.route('/scrutins/vote/<string:scrutin_id>', methods=["GET", "POST"])
+@scrutin_routes.route('/scrutins/<string:scrutin_id>', methods=["GET", "POST"])
 def add_vote(scrutin_id):
     """Page de vote d'un scrutin"""
     
