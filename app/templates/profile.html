@@ -13,7 +13,7 @@
  <h3>Nombres de scrutins : {{createdScrutin|length}}</h3>
 {% for scrutin in createdScrutin %}
 <ul>
-    <li>Is Active ? : {{ scrutin.is_active }}</li>
+    <!-- <li>Is Active ? : {{ scrutin.is_active }}</li> -->
     <li>Id du scrutin : {{ scrutin.scrutin_id }}</li>
     <li>Date de création : {{ scrutin.created_at.strftime("%d/%m/%Y %H:%M:%S") }}</li>
     <li>Date de début : {{ scrutin.start_date.strftime("%d/%m/%Y %H:%M:%S") }}</li>
@@ -44,7 +44,7 @@
 <h3>Nombres de scrutins : {{participatedScrutin|length}}</h3>
 {% for scrutin in participatedScrutin %}
 <ul>
-    <li>Is Active ? : {{ scrutin.is_active }}</li>
+    <!-- <li>Is Active ? : {{ scrutin.is_active }}</li> -->
     <li>Id du scrutin : {{ scrutin.scrutin_id }}</li>
     <li>Date de création : {{ scrutin.created_at.strftime("%d/%m/%Y %H:%M:%S") }}</li>
     <li>Date de début : {{ scrutin.start_date.strftime("%d/%m/%Y %H:%M:%S") }}</li>
