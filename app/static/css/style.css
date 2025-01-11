@@ -26,6 +26,10 @@ body {
   min-height: 100vh;
 }
 
+.center {
+  margin: auto;
+}
+
 header {
   position: fixed;
   background-color: var(--Background1, #262B2C);
@@ -217,6 +221,16 @@ a {
       outline: none;
     }
   }
+
+  .add-option {
+    background: transparent;
+    border: none;
+    color: var(--PrimaryColor, #E3B37F);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 1.2rem;
+  }
 }
 
 .scrutin-form {
@@ -249,7 +263,6 @@ a {
   }
 }
 
-
 .btn-border-anim {
   background-color: var(--Background1, #262B2C);
   border: none;
@@ -270,12 +283,7 @@ a {
     position: absolute;
   }
 
-  &:hover:before,
-  &:hover:after {
-    width: calc(100% + 4px);
-    height: calc(100% + 4px);
-  }
-
+  
   &:before {
     bottom: -2px;
     left: -2px;
@@ -283,13 +291,18 @@ a {
     border-left: 2px solid var(--PrimaryColor, #E3B37F);
     transition: 0.3s all;
   }
-
+  
   &:after {
     top: -2px;
     right: -2px;
     border-top: 2px solid var(--PrimaryColor, #E3B37F);
     border-right: 2px solid var(--PrimaryColor, #E3B37F);
     transition: 0.3s all;
+  }
+  &:hover:before,
+  &:hover:after {
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
   }
 }
 

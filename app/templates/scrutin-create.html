@@ -22,20 +22,17 @@
             <label for="options">OPTIONS</label>
             
             <div class="option">
-                <input type="text" placeholder="OPTION 1*" required="required">
-                <button type="button"><img src="{{ url_for('static', filename='assets/delete.svg') }}" alt=""></button>
+                <input type="text" placeholder="OPTION 1*" required="required" name="option1">
+                <button type="button" class="option1"><img src="{{ url_for('static', filename='assets/svg/delete.svg') }}" alt="Icone supprimer"></button>
             </div>
             <div class="option">
                 <input type="text" placeholder="OPTION 2*" required="required">
-                <button type="button"><img src="{{ url_for('static', filename='assets/delete.svg') }}" alt=""></button>
+                <button type="button"><img src="{{ url_for('static', filename='assets/svg/delete.svg') }}" alt="Icone supprimer"></button>
             </div>
-            <div class="option">
-                <input type="text" placeholder="OPTION 3*" required="required">
-                <button type="button"><img src="{{ url_for('static', filename='assets/delete.svg') }}" alt=""></button>
-            </div>
+            <button type="button" class="add-option">Ajouter <img src="{{ url_for('static', filename='assets/svg/add.svg') }}" alt="Icone ajouter"></button>
         </div>
 
-        <button class="btn-border-anim" type="submit" style="margin: auto;">Valider</button>
+        <button class="btn-border-anim center" type="submit">Valider</button>
     </form>
 </div>
 {% endblock %}
