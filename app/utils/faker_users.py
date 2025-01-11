@@ -93,6 +93,7 @@ def generate_scrutin():
     return {
         "scrutin_id": question_id,  # Utiliser l'ObjectId comme question_id
         "created_at": scrutin_start_date - timedelta(days=random.randint(0, 4)),  # Création dans un intervalle avant la start_date
+        "is_active": False if random.randint(1, 10) == 1 else True,
         "title": fake.sentence(nb_words=6),
         "description": fake.text(max_nb_chars=100),
         "start_date": scrutin_start_date,
