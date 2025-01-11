@@ -8,10 +8,13 @@
 </ul>
 {% endfor %}
 <h2>Les 10 derniers scrutins actifs</h2>
+<pre>{{ scrutinsActive }}</pre>
+
 {% for scrutin in scrutinsActive %}
 <ul>
     <li>Id de la question: {{ scrutin.scrutin_id }}</li>
     <li>Date de création : {{ scrutin.created_at.strftime("%d/%m/%Y %H:%M:%S") }}</li>
     <li>Date de fin : {{ scrutin.end_date.strftime("%d/%m/%Y %H:%M:%S") }}</li>
+    <li>Date du dernier vote : {{ scrutin.last_vote_date.strftime("%d/%m/%Y %H:%M:%S") }}</li>
 </ul>
 {% endfor %}
