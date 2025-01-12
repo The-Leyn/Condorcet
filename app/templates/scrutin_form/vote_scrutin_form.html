@@ -1,3 +1,37 @@
-<h1>Votez pour le scurtin {{ scrutin_id }}</h1>
+<h1>{{ scrutin['title'] }}</h1>
+<p>{{ scrutin['description'] }}</p>
+<h2>Créer par @{{ scrutin['creator_pseudonym'] }}</h2>
 
+{% if vote_info %}
+    <p>Reclassez chaque option par ordre de préférence</p>
+{% else %}
+    <p>Classez chaque option par ordre de préférences</p>
+{% endif %}
 
+{% if scrutin.start_date < current_time and scrutin['end_date'] > current_time %}
+
+<form action="" method="post">
+    {% if vote_info %} 
+        <ul>
+            {% for option in vote_info['preferences'] %}
+                   <li>
+                    <input type="hidden" name="preferences[]" value="{{ option }}">
+                    {{ option }}
+                   </li> 
+            {% endfor %}
+        </ul>
+   {% else %}
+        <ul>
+            {% for option in scrutin['options'] %}
+                <li>
+                    <input type="hidden" name="preferences[]" value="{{ option }}">
+                    {{ option }}
+                </li> 
+            {% endfor %}
+        </ul>
+   {% endif %}
+  <button>Valider</button>
+</form>
+<!-- {% elif scrutin.start_date < current_time %}
+    <h3>Le s</h3> -->
+{% endif %}

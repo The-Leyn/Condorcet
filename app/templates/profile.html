@@ -61,6 +61,12 @@
         </ol>
 
     </li>
+    {% if scrutin.start_date <= current_time <= scrutin.end_date %}
+        <li><a href="{{ url_for('scrutin.add_vote', scrutin_id=scrutin.scrutin_id|string) }}">Modifier</a></li>
+    {% elif scrutin.end_date < current_time %}
+        <li><a href="#">Résultat</a></li>
+    {% endif %}
+
 </ul>
 <hr>
 {% endfor %}
