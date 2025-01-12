@@ -1,7 +1,6 @@
 # app/routes/user_routes.py
 from flask import Blueprint, jsonify, render_template, request, jsonify, redirect, url_for, session
 from app.models.user import UserModel
-from werkzeug.security import generate_password_hash
 import logging
 
 # Définir le blueprint
@@ -15,12 +14,19 @@ def get_users():
         return render_template("index_user.html", users=users)
     return jsonify({"error": "User not found"}), 404
 
-@user_routes.route('/user/<id_user>', methods=['GET'])
-def get_user(id_user):
-    """Récupérer les informations d'un utilisateur."""
-    user = UserModel.find_by_id_user(id_user)
+# PROFILE
+@user_routes.route('/profile', methods=['GET'])
+def get_user_profile():
+    """Afficher le profil d'un utilisateur"""
+    if 'user_id' not in session:
+        return redirect(url_for('user.login'))
+    current_time = datetime.now()
+    user_id = session.get('user_id')
+    user = UserModel.find_by_id_user(user_id)
+    createdScrutin = ScrutinModel.find_created_by_user(user_id)
+    participatedScrutin = ScrutinModel.find_user_participations(user_id)
     if user:
-        return render_template("profile.html", user=user)
+        return render_template("profile.html", current_time=current_time, user=user, createdScrutin=createdScrutin, participatedScrutin=participatedScrutin)
     return jsonify({"error": "User not found"}), 404
 
 
