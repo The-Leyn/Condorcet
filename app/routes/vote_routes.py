@@ -18,4 +18,20 @@ def scrutins():
     if request.method == 'GET':
         # Affiche le formulaire
         return render_template('scrutins.html')
+    
+@vote_routes.route('/vote', methods=['GET', 'POST'])
+def vote():
+    from flask import request, render_template
+
+    if request.method == 'GET':
+        # Affiche le formulaire
+        return render_template('vote.html')
+    
+@vote_routes.route('/dashboard', methods=['GET', 'POST'])
+def dashboard():
+    from flask import request, render_template
+
+    if request.method == 'GET':
+        # Affiche le formulaire
+        return render_template('dashboard.html')
 

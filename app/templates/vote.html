@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Vote{% endblock %}
+{% block javascript %}
+<script src="{{ url_for('static', filename='js/vote-sortable.js') }}" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="vote-container">
+  <div>
+    <h1>Si vous pouvier adoptez un animal lequel choisiriez-vous ?</h1>
+    <p>Je propose ici de choisir entre plusieurs animaux de compagnies. Je pourrais ainsi me faire une idée de votre personnalité et de votre style de vie.</p>
+    <p>Créer par <span>@pramirez</span></p>
+  </div>
+
+  <form action="">
+    <p>Classez chaque option par ordre de préférences</p>
+    <ul id="sortable">
+      <li><input type="text" value="Chien" name="" readonly></li>
+      <li><input type="text" value="Chat" name="" readonly></li>
+      <li><input type="text" value="Hamster" name="" readonly></li>
+    </ul>
+    <button class="btn-border-anim">Valider</button>
+  </form>
+</div>
+{% endblock %}
