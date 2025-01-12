@@ -3,19 +3,7 @@
 {% block title %}Profil{% endblock %}
 
 {% block content %}
-<div class="profil-container">
-  <aside>
-    <div class="profil-info">
-      <h2>Jhon Doe</h2>
-      <span>@TheRealJohn</span>
-      <p><span><img class="icon" src="{{ url_for('static', filename='assets/svg/mail.svg') }}" alt=""></span>jhon.doe@email.com</p>
-    </div>
-    <div class="profil-actions">
-      <a href=""><span><img class="icon" src="{{ url_for('static', filename='assets/svg/edit.svg') }}" alt=""></span>Modifier vos informations</a>
-      <a href=""><span><img class="icon" src="{{ url_for('static', filename='assets/svg/quit.svg') }}" alt=""></span>Déconnexion</a>
-      <a href=""><span><img class="icon" src="{{ url_for('static', filename='assets/svg/trash.svg') }}" alt=""></span>Désactiver votre compte</a>
-    </div>
-  </aside>
+
   <main>
     <div class="scrutin-profil-top">
       <h1>Scrutins</h1>
@@ -58,5 +46,4 @@
       </article>
     </section>
   </main>
-</div>
 {% endblock %}

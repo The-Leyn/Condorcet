@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
-{% block title %}Inscription{% endblock %}
+{% block title %}Scrutin{% endblock %}
+{% block javascript %}<script src="{{ url_for('static', filename='js/scrutin-form.js') }}" defer></script>{% endblock %}
 
 {% block content %}
 <div class="form-container scrutin-form">
@@ -18,16 +19,16 @@
             <textarea name="description" id="description" placeholder="Votre description..." required="required" rows="10"></textarea>
         </div>
 
-        <div class="input-label-container">
+        <div class="input-label-container" id="options-container">
             <label for="options">OPTIONS</label>
             
             <div class="option">
                 <input type="text" placeholder="OPTION 1*" required="required" name="option1">
-                <button type="button" class="option1"><img src="{{ url_for('static', filename='assets/svg/delete.svg') }}" alt="Icone supprimer"></button>
+                <button type="button" class="delete-option"><img src="{{ url_for('static', filename='assets/svg/delete.svg') }}" alt="Icone supprimer"></button>
             </div>
             <div class="option">
                 <input type="text" placeholder="OPTION 2*" required="required">
-                <button type="button"><img src="{{ url_for('static', filename='assets/svg/delete.svg') }}" alt="Icone supprimer"></button>
+                <button type="button" class="delete-option"><img src="{{ url_for('static', filename='assets/svg/delete.svg') }}" alt="Icone supprimer"></button>
             </div>
             <button type="button" class="add-option">Ajouter <img src="{{ url_for('static', filename='assets/svg/add.svg') }}" alt="Icone ajouter"></button>
         </div>

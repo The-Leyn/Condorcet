@@ -9,5 +9,13 @@ def scrutin():
 
     if request.method == 'GET':
         # Affiche le formulaire
-        return render_template('scrutin-create.html')
+        return render_template('scrutin-form.html')
+    
+@vote_routes.route('/scrutins', methods=['GET', 'POST'])
+def scrutins():
+    from flask import request, render_template
+
+    if request.method == 'GET':
+        # Affiche le formulaire
+        return render_template('scrutins.html')
 

@@ -82,12 +82,14 @@ def login():
         return {"message": "Utilisateur connecté avec succès"}, 201
 
 
-@user_routes.route('/base-test', methods=['GET', 'POST'])
+@user_routes.route('/base-test', methods=['GET'])
 def base():
     from flask import request, render_template
-    from app.models.user import UserModel
 
-    
     return render_template('base.html')
 
-    
+@user_routes.route('/profile', methods=['GET'])
+def profil():
+    from flask import request, render_template
+
+    return render_template('profile.html')
