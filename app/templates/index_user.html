@@ -1,7 +1,11 @@
-{% for u in users %} 
+{% for u in users %}
+    <!-- <pre>{{ users }}</pre> -->
+
     <a href="user/{{ u._id }}">
         <ul>
-            <li>{{ u.username }}</li>
+            <li>{{ u.pseudonym }}</li>
+            <li>{{ u.firstname }}</li>
+            <li>{{ u.lastname }}</li>
             <li>{{ u.email }}</li>
         </ul>
     </a>
