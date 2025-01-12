@@ -31,6 +31,10 @@ class UserModel:
 
     @staticmethod
     def login(email, password):
+        """Vérifie si les champs ne sont pas vide"""
+        if not email or not password:
+            return {"error" : "Email ou mot de passe vide"}, False
+
         """Vérifie les informations d'identification et crée une session."""
         user = UserModel.find_by_email(email)
         if not user:
