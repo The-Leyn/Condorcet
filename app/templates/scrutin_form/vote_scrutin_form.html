@@ -29,14 +29,12 @@
           {% endfor %}
       </ul>
     {% else %}
-      <ul>
+      <ul id="sortable">
         {% for option in scrutin['options'] %}
-            <li>
-                <input type="hidden" name="preferences[]" value="{{ option }}">
-                {{ option }}
-            </li> 
+            <li><input type="text" name="preferences[]" value="{{ option }}"></li> 
           {% endfor %}
       </ul>
+    {% endif %}
     <button class="btn-border-anim">Valider</button>
   </form>
   {% endif %}

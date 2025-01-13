@@ -12,7 +12,7 @@
     </div>
     <div class="profil-actions">
       <a href=""><span><img class="icon" src="{{ url_for('static', filename='assets/svg/edit.svg') }}" alt=""></span>Modifier vos informations</a>
-      <a href=""><span><img class="icon" src="{{ url_for('static', filename='assets/svg/quit.svg') }}" alt=""></span>Déconnexion</a>
+      <a href="{{ url_for('user.logout') }}"><span><img class="icon" src="{{ url_for('static', filename='assets/svg/quit.svg') }}" alt=""></span>Déconnexion</a>
       <a href=""><span><img class="icon" src="{{ url_for('static', filename='assets/svg/trash.svg') }}" alt=""></span>Désactiver votre compte</a>
     </div>
   </aside>
@@ -24,7 +24,7 @@
         <li><a href="{{ url_for('user.get_user_profile', action='participate') }}" {% if action == 'participate'%} class="active"{% endif %}>Participations</a></li>
       </ul>
       <div>
-        <a href="" class="btn-border-anim">Créer un scrutin</a>
+        <a href="{{ url_for('scrutin.create_scrutin') }}" class="btn-border-anim">Créer un scrutin</a>
       </div>
     </div>
 
@@ -36,7 +36,7 @@
           <p>{{ scrutin.title }}</p>
           <div class="scrutin-info">
             <p>Créer le <span> {{ scrutin.created_at.strftime("%d/%m/%Y %H:%M:%S") }} </span> - Fin le <span> {{ scrutin.start_date.strftime("%d/%m/%Y %H:%M:%S") }} </span></p>
-            <p>Par <span> @TheRealJhon</span></p>
+            <p>Par <span> @{{ scrutin.creator_pseudonym }}</span></p>
             <p><span><img class="icon" src="{{ url_for('static', filename='assets/svg/user.svg') }}" alt=""></span><span>24 </span> participants</p>
           </div>
           <button><img src="{{ url_for('static', filename='assets/svg/down-arrow.svg') }}" alt=""></button>
@@ -54,7 +54,7 @@
             </div>
 
             <!-- <a href="" class="btn-border-anim">Modifier</a> -->
-            {% if scrutin.start_date > current_time and action == 'participate'%}
+            {% if scrutin.start_date > current_time %}
             <a class="btn-border-anim" href="{{ url_for('scrutin.edit_scrutin', scrutin_id=scrutin.scrutin_id|string) }}">Modifier</a></li>
             {% elif scrutin.end_date < current_time %}
             <a class="btn-border-anim" href="#">Résultat</a>

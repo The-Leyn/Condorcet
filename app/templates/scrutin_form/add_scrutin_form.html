@@ -26,11 +26,11 @@
             <label for="options">OPTIONS</label>
             
             <div class="option">
-                <input type="text" placeholder="OPTION 1*" required="required" name="option1">
+                <input type="text" placeholder="OPTION 1*" required="required" name="options[]">
                 <button type="button" class="delete-option"><img src="{{ url_for('static', filename='assets/svg/delete.svg') }}" alt="Icone supprimer"></button>
             </div>
             <div class="option">
-                <input type="text" placeholder="OPTION 2*" required="required">
+                <input type="text" placeholder="OPTION 2*" required="required" name="options[]">
                 <button type="button" class="delete-option"><img src="{{ url_for('static', filename='assets/svg/delete.svg') }}" alt="Icone supprimer"></button>
             </div>
             <button type="button" class="add-option">Ajouter <img src="{{ url_for('static', filename='assets/svg/add.svg') }}" alt="Icone ajouter"></button>

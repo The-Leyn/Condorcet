@@ -11,10 +11,10 @@
     {% elif message %}
     <p>{{ message }}</p>
     {% endif %}
+    {% if scrutin is none %}
+    <p class="error">Le scrutin que vous essayez de modifier n'existe pas ou vous n'avez pas les droits nécessaires.</p>
+    {% else %}
     <form action="{{ url_for('scrutin.create_scrutin') }}" method="POST">
-        {% if scrutin is none %}
-        <p class="error">Le scrutin que vous essayez de modifier n'existe pas ou vous n'avez pas les droits nécessaires.</p>
-        {% else %}
         <input type="text" id="title" name="title" placeholder="QUEL EST VOTRE QUESTION*" required="required" value="{{scrutin.title}}">
 
         <div class="align-input">
@@ -32,7 +32,7 @@
 
             {% for option in scrutin.options %}
             <div class="option">
-                <input type="text" placeholder="OPTION 1*" required="required" name="option1" value="{{ option }}">
+                <input type="text" placeholder="OPTION 1*" required="required" name="options[]" value="{{ option }}">
                 <button type="button" class="delete-option"><img src="{{ url_for('static', filename='assets/svg/delete.svg') }}" alt="Icone supprimer"></button>
             </div>
             {% endfor %}
@@ -42,55 +42,6 @@
 
         <button class="btn-border-anim center" type="submit">Valider</button>
     </form>
+    {% endif %}
 </div>
 {% endblock %}
-
-
-
-<!-- {% if scrutin is none %}
-    <p>Le scrutin que vous essayez de modifier n'existe pas ou vous n'avez pas les droits nécessaires.</p>
-{% else %}
-<h1>Modifier le scrutin {{ scrutin_id }}</h1>
-<pre>{{scrutin}}</pre>
-
-<form method="POST" action="{{ url_for('scrutin.edit_scrutin', scrutin_id=scrutin_id|string) }}">
-  <div>
-    <label for="title">Titre du scrutin :</label>
-    <input type="text" id="title" name="title" value="{{scrutin.title}}" required  />
-  </div>
-
-  <div>
-    <label for="description">Description :</label>
-    <textarea id="description" name="description" required>{{scrutin.description}}</textarea>
-  </div>
-
-  <div>
-    <label for="start_date">Date de début :</label>
-    <input type="date" id="start_date" name="start_date" value="{{ scrutin.start_date.strftime('%Y-%m-%d') }}" required />
-  </div>
-
-  <div>
-    <label for="end_date">Date de fin :</label>
-    <input type="date" id="end_date" name="end_date" value="{{ scrutin.end_date.strftime('%Y-%m-%d') }}" required />
-  </div>
-  <div>
-    <label for="options">Options du scrutin (minimum 2) :</label>
-    <div>
-        {% for option in scrutin.options %}
-            <div>
-                <input type="text" name="options[]" placeholder="Option 1" value="{{option}}" required />
-                <button type="button">Supprimer</button>
-            </div>
-        {% endfor %}
-    </div>
-    <button type="button">Ajouter une option</button>
-  </div>
-  <button type="submit">Modifier le scrutin</button>
-</form>
-{% if error %}
-  <p>{{ error }}</p>
-{% elif message %}
-  <p>{{ message }}</p>
-
-{% endif %}
-{% endif %} -->
