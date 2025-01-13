@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     input.type = "text";
     input.required = true;
     input.placeholder = `OPTION ${optionIndex}*`;
-    input.name = `option${optionIndex}`;
+    input.name = `options[]`;
 
     const deleteButton = document.createElement("button");
     deleteButton.type = "button";

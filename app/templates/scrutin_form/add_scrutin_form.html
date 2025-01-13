@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Scrutin{% endblock %}
+{% block javascript %}<script src="{{ url_for('static', filename='js/scrutin-form.js') }}" defer></script>{% endblock %}
+
+{% block content %}
+<div class="form-container scrutin-form">
+    <h2>Créer votre scruntin</h2>
+    {% if error %}
+    <p class="error">{{ error }}</p>
+    {% endif %}
+    <form action="{{ url_for('scrutin.create_scrutin') }}" method="POST">
+        <input type="text" id="title" name="title" placeholder="QUEL EST VOTRE QUESTION*" required="required">
+
+        <div class="align-input">
+            <input type="date" id="start_date" name="start_date" placeholder="DATE DE DÉBUT*" required="required">
+            <input type="date" id="end_date" name="end_date" placeholder="DATE DE FIN*" required="required">
+        </div>
+
+        <div class="input-label-container">
+            <label for="description">DESCRIPTION*</label>
+            <textarea name="description" id="description" placeholder="Votre description..." required="required" rows="10"></textarea>
+        </div>
+
+        <div class="input-label-container" id="options-container">
+            <label for="options">OPTIONS</label>
+            
+            <div class="option">
+                <input type="text" placeholder="OPTION 1*" required="required" name="option1">
+                <button type="button" class="delete-option"><img src="{{ url_for('static', filename='assets/svg/delete.svg') }}" alt="Icone supprimer"></button>
+            </div>
+            <div class="option">
+                <input type="text" placeholder="OPTION 2*" required="required">
+                <button type="button" class="delete-option"><img src="{{ url_for('static', filename='assets/svg/delete.svg') }}" alt="Icone supprimer"></button>
+            </div>
+            <button type="button" class="add-option">Ajouter <img src="{{ url_for('static', filename='assets/svg/add.svg') }}" alt="Icone ajouter"></button>
+        </div>
+
+        <button class="btn-border-anim center" type="submit">Valider</button>
+    </form>
+</div>
+{% endblock %}
+
+<!-- <h1>Créer un nouveau scrutin</h1>
+
+<form method="POST" action="{{ url_for('scrutin.create_scrutin') }}">
+  <div>
+    <label for="title">Titre du scrutin :</label>
+    <input type="text" id="title" name="title" required />
+  </div>
+
+  <div>
+    <label for="description">Description :</label>
+    <textarea id="description" name="description" required></textarea>
+  </div>
+
+  <div>
+    <label for="start_date">Date de début :</label>
+    <input type="date" id="start_date" name="start_date" required />
+  </div>
+
+  <div>
+    <label for="end_date">Date de fin :</label>
+    <input type="date" id="end_date" name="end_date" required />
+  </div>
+  <div>
+    <label for="options">Options du scrutin (minimum 2) :</label>
+    <div>
+      <div>
+        <input type="text" name="options[]" placeholder="Option 1" required />
+        <button type="button">Supprimer</button>
+      </div>
+      <div>
+        <input type="text" name="options[]" placeholder="Option 2"  />
+        <button type="button">Supprimer</button>
+      </div>
+      <div>
+        <input type="text" name="options[]" placeholder="Option 3"  />
+        <button type="button">Supprimer</button>
+      </div>
+    </div>
+    <button type="button">Ajouter une option</button>
+  </div>
+  <button type="submit">Créer le scrutin</button>
+</form>
+{% if error %}
+    <p>{{ error }}</p>
+{% endif %} -->

@@ -607,6 +607,10 @@ a {
   display: block!important;
 }
 
+p.error {
+  color: var(--DangerColor);
+}
+
 .btn-border-anim {
   background-color: var(--Background1);
   border: none;

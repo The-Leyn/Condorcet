@@ -13,11 +13,11 @@ def create_app():
     app.db = client.condorcet  # Ajout de la base de données à l'application
 
     # Importer les blueprints
-    from .routes import main_routes, user_routes, vote_routes
+    from .routes import main_routes, user_routes, scrutin_routes
 
     # Enregistrer les blueprints
     app.register_blueprint(main_routes)
     app.register_blueprint(user_routes)
-    app.register_blueprint(vote_routes)
+    app.register_blueprint(scrutin_routes)
 
     return app

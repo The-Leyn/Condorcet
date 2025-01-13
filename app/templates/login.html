@@ -13,9 +13,12 @@
     
     <div class="form-container">
         <h2>Identifiez-vous</h2>
-        <form action="{{ url_for('user.register') }}" method="POST">
-            <input type="text" id="email" name="email" placeholder="VOTRE EMAIL*" required="required">
-            <input type="password" id="password" name="password" placeholder="MOT DE PASSE*" required="required">
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+        <form action="{{ url_for('user.login') }}" method="POST">
+            <input type="text" id="email" name="email" placeholder="VOTRE EMAIL*" required="required" value="admin@email.com">
+            <input type="password" id="password" name="password" placeholder="MOT DE PASSE*" required="required" value="adminPassword">
             
             <button class="btn-border-anim" type="submit">Se connecter</button>
         </form>
