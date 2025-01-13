@@ -29,7 +29,6 @@ class UserModel:
         return current_app.db.users.find_one({"email": email})
 
 # CONNEXION
-
     @staticmethod
     def login(email, password):
         """Vérifie si les champs ne sont pas vide"""

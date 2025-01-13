@@ -1,37 +1,42 @@
-<h1>{{ scrutin['title'] }}</h1>
-<p>{{ scrutin['description'] }}</p>
-<h2>Créer par @{{ scrutin['creator_pseudonym'] }}</h2>
+{% extends "base.html" %}
 
+{% block title %}Vote{% endblock %}
+{% block javascript %}
+<script src="{{ url_for('static', filename='js/vote-sortable.js') }}" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+{% endblock %}
 
-{% if scrutin.start_date < current_time and scrutin['end_date'] > current_time %}
-{% if vote_info %}
-    <p>Reclassez chaque option par ordre de préférence</p>
-{% else %}
-    <p>Classez chaque option par ordre de préférences</p>
-{% endif %}
+{% block content %}
+<div class="vote-container">
+  <div>
+    {% if vote_info %}
+        <p>Reclassez chaque option par ordre de préférence</p>
+    {% else %}
+        <p>Classez chaque option par ordre de préférences</p>
+    {% endif %}
+    <h1>Si vous pouvier adoptez un animal lequel choisiriez-vous ?</h1>
+    <p>Je propose ici de choisir entre plusieurs animaux de compagnies. Je pourrais ainsi me faire une idée de votre personnalité et de votre style de vie.</p>
+    <p>Créer par <span>@pramirez</span></p>
+  </div>
 
-<form action="" method="post">
+  {% if scrutin.start_date < current_time and scrutin['end_date'] > current_time %}
+  <form action="">
     {% if vote_info %} 
-        <ul>
-            {% for option in vote_info['preferences'] %}
-                   <li>
-                    <input type="hidden" name="preferences[]" value="{{ option }}">
-                    {{ option }}
-                   </li> 
-            {% endfor %}
-        </ul>
-   {% else %}
-        <ul>
-            {% for option in scrutin['options'] %}
-                <li>
-                    <input type="hidden" name="preferences[]" value="{{ option }}">
-                    {{ option }}
-                </li> 
-            {% endfor %}
-        </ul>
-   {% endif %}
-  <button>Valider</button>
-</form>
-<!-- {% elif scrutin.start_date < current_time %}
-    <h3>Le s</h3> -->
-{% endif %}
+      <p>Classez chaque option par ordre de préférences</p>
+      <ul id="sortable">
+          {% for option in vote_info['preferences'] %}
+            <li><input type="text" value="{{ option }}" name="preferences[]" readonly></li>
+          {% endfor %}
+      </ul>
+    {% else %}
+      <ul id="sortable">
+        {% for option in scrutin['options'] %}
+            <li><input type="text" name="preferences[]" value="{{ option }}"></li> 
+          {% endfor %}
+      </ul>
+    {% endif %}
+    <button class="btn-border-anim">Valider</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

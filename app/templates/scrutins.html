@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Scrutins{% endblock %}
+
+{% block content %}
+
+  <main>
+    <div class="scrutin-top">
+      <h1>Tous les scrutins</h1>
+      
+      <div>
+        <p>Bienvenue sur la page des scrutins ! Ici, vous trouverez toutes les propositions de votes publiées sur la plateforme. Parcourez-les, participez et faites entendre votre voix !</p>
+        <a href="" class="btn-border-anim">Créer un scrutin</a>
+      </div>
+    </div>
+
+    <section class="articles">
+      <span>16 scrutins</span>
+      <article class="scrutin">
+        <input type="checkbox" name="scrutin-1" id="scrutin-1">
+        <label for="scrutin-1" class="title-accordeon">
+          <p>Quel type de musique préférez-vous écouter ?</p>
+          <div class="scrutin-info">
+            <p>Créer le <span> 18/12/2024 </span> - Fin le <span> 22/12/2024 </span></p>
+            <p>Par <span> @TheRealJhon</span></p>
+            <p><span><img class="icon" src="{{ url_for('static', filename='assets/svg/user.svg') }}" alt=""></span><span>24 </span> participants</p>
+          </div>
+          <button><img src="{{ url_for('static', filename='assets/svg/down-arrow.svg') }}" alt=""></button>
+        </label>
+        <div class="content-accordeon">
+          <div class="scrutin-description"><p>Je vous propose de renseigner votre style de musique préféré parmis plusieurs choix.</p></div>
+          <div class="scrutin-bottom">
+            <div class="choices">
+              <p>Vos choix :</p>
+              <ul>
+                <li>Rock</li>
+                <li>Classique</li>
+                <li>Funk</li>
+                <li>Reggea</li>
+              </ul>
+            </div>
+            <a href="" class="btn-border-anim">Participer</a>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+{% endblock %}

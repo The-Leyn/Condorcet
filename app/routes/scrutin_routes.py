@@ -55,7 +55,7 @@ def create_scrutin():
             )
 
             # Rediriger vers une page de succès ou d'affichage du scrutin
-            return redirect(url_for('user.get_user_profile'))
+            return redirect(url_for('user.get_user_profile', action='scrutins'))  # À adapter selon ta logique de redirection
 
         except Exception as e:
             # Si une exception se produit, afficher l'erreur
@@ -175,6 +175,15 @@ def add_vote(scrutin_id):
             ScrutinModel.addVote(preferences, user_id, scrutin_id)
             return redirect(url_for('scrutin.add_vote', scrutin_id=scrutin_id))
 
+    # # Verifier si le scrutin est en cours
+    # if scrutin['start_date'] < current_time and scrutin['end_date'] > current_time:
+    #     return render_template("scrutin_form/vote_scrutin_form.html", scrutin_id=scrutin_id)
+    
+    # Verifier si le scrutin est terminé
+    if scrutin['end_date'] < current_time:
+        return render_template("results.html", scrutin_id=scrutin_id)
+    
+    # Verifier si l'utilisateur à déjà voté
     # Vérifier si l'utilisateur a déjà voté
     vote_info = ScrutinModel.find_user_vote(user_id, scrutin_id)
     if vote_info:

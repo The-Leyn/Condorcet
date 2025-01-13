@@ -17,18 +17,25 @@ def get_users():
     return jsonify({"error": "User not found"}), 404
 
 # PROFILE
-@user_routes.route('/profile', methods=['GET'])
-def get_user_profile():
+@user_routes.route('/profile/<action>', methods=['GET'])
+def get_user_profile(action):
     """Afficher le profil d'un utilisateur"""
     if 'user_id' not in session:
         return redirect(url_for('user.login'))
     current_time = datetime.now()
     user_id = session.get('user_id')
     user = UserModel.find_by_id_user(user_id)
-    createdScrutin = ScrutinModel.find_created_by_user(user_id)
-    participatedScrutin = ScrutinModel.find_user_participations(user_id)
+    
+    scrutins = None
+    if action == 'scrutins':
+        scrutins = ScrutinModel.find_created_by_user(user_id)
+    elif action == 'participate':
+        scrutins = ScrutinModel.find_user_participations(user_id)
+    else:
+        return jsonify({"error": "Invalid action"}), 400
+    
     if user:
-        return render_template("profile.html", current_time=current_time, user=user, createdScrutin=createdScrutin, participatedScrutin=participatedScrutin)
+        return render_template("profile.html", current_time=current_time, user=user, scrutins=scrutins, action=action)
     return jsonify({"error": "User not found"}), 404
 
 
@@ -65,7 +72,6 @@ def logout():
         UserModel.logout()
         return redirect(url_for('main.home'))
     
-
 @user_routes.route("/register", methods=["GET", "POST"])
 def register():
     
