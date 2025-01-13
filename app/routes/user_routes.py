@@ -1,7 +1,9 @@
 # app/routes/user_routes.py
 from flask import Blueprint, jsonify, render_template, request, jsonify, redirect, url_for, session
 from app.models.user import UserModel
-import logging
+from werkzeug.security import generate_password_hash
+from app.models.scrutin import ScrutinModel
+from datetime import datetime
 
 # Définir le blueprint
 user_routes = Blueprint('user', __name__)
