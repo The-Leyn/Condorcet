@@ -1,7 +1,31 @@
 from flask import current_app
 from datetime import datetime
 from bson.objectid import ObjectId
+class ScrutinModel:from datetime import datetime
+
 class ScrutinModel:
+    def find_all_scrutin():
+        """Récupérer tous les scrutins."""
+        scrutins = list(
+            current_app.db.users.aggregate([
+                {"$unwind": "$scrutin"},  # $unwind Permet de transformer chaque élément du tableau scrutin en un document distinct. Donc chaque scrutin est traité individuellement.
+                {"$sort": {"scrutin.created_at": -1}},  # Trier par date de création décroissante
+                {"$project": {  # Sélectionner uniquement les champs nécessaires
+                    "_id": 0,
+                    "scrutin_id": "$scrutin.scrutin_id",
+                    "title": "$scrutin.title",
+                    "description": "$scrutin.description",
+                    "created_at": "$scrutin.created_at",
+                    "start_date": "$scrutin.start_date",
+                    "end_date": "$scrutin.end_date",
+                    "options": "$scrutin.options",
+                    "votes": "$scrutin.votes"
+                }}
+            ])
+        )
+        return scrutins
+
+
     @staticmethod
     def find_10_last():
         """Récupérer les 10 derniers scrutins."""
@@ -230,3 +254,58 @@ class ScrutinModel:
                 "scrutin.$.votes": new_vote
             }}
         )
+
+@staticmethod
+def average_options_per_scrutin():
+    """
+    Calculer le nombre moyen d'options par scrutin.
+    """
+    result = current_app.db.users.aggregate([
+        {"$unwind": "$scrutin"},  # Séparer chaque scrutin
+        {"$group": {  # Grouper tous les scrutins
+            "_id": None,
+            "total_options": {"$sum": {"$size": "$scrutin.options"}},  # Compter le nombre d'options
+        }},
+        {"$count": "total_scrutins"},  # Utiliser $count pour compter le nombre de scrutins
+        {"$project": {  # Calculer la moyenne
+            "_id": 0,
+            "average_options": {"$divide": ["$total_options", "$total_scrutins"]}  # Moyenne = total_options / total_scrutins
+        }}
+    ])
+
+    # Obtenir le résultat de l'agrégation
+    avg = next(result, None)
+    return avg.get("average_options", 0) if avg else 0
+
+@staticmethod
+def find_top_10_participated_scrutins():
+    """
+    Récupérer les 10 scrutins avec le plus de participants.
+    """
+    result = current_app.db.users.aggregate([
+        {"$unwind": "$scrutin"},  # Séparer chaque scrutin
+        {"$project": {  # Ajouter un champ pour compter le nombre de votes
+            "scrutin_id": "$scrutin.scrutin_id",
+            "title": "$scrutin.title",
+            "description": "$scrutin.description",
+            "created_at": "$scrutin.created_at",
+            "is_active": "$scrutin.is_active",
+            "start_date": "$scrutin.start_date",
+            "end_date": "$scrutin.end_date",
+            "options": "$scrutin.options",
+            "votes_count": {"$size": "$scrutin.votes"}  # Compter les votes
+        }},
+        {"$sort": {"votes_count": -1}},  # Trier par nombre de votes décroissant
+        {"$limit": 10}  # Limiter à 10 résultats
+    ])
+
+    top_scrutins = list(result)  # Convertir le curseur en liste
+
+    # Calculer la moyenne des votes pour les 10 scrutins les plus populaires
+    if top_scrutins:
+        total_votes = sum(scrutin['votes_count'] for scrutin in top_scrutins)
+        average_votes = total_votes / len(top_scrutins)
+    else:
+        average_votes = 0
+
+    return top_scrutins, average_votes  # Retourner à la fois les scrutins et la moyenne des votes

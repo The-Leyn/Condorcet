@@ -8,6 +8,8 @@
 <body>
     <h1>Liste des scrutins</h1>
 
+    <h2>Moyenne des options pour tous les scrutins: {{ average_options }}</h2>
+
     {% if scrutins %}
         <ul>
             {% for scrutin in scrutins %}

@@ -5,12 +5,23 @@ from app.models.scrutin import ScrutinModel
 from bson.objectid import ObjectId
 from datetime import datetime
 
-
-# Définir le blueprint
 scrutin_routes = Blueprint('scrutin', __name__)
 @scrutin_routes.route('/scrutins', methods=["GET"])
 def index_scrutin():
-    return render_template("home.html")
+    # Récupérer tous les scrutins
+    scrutins = ScrutinModel.find_all_scrutin()
+    # Calculer le nombre total d'options et le nombre de scrutins
+    total_options = sum(len(scrutin['options']) for scrutin in scrutins)
+    total_scrutins = len(scrutins)
+
+    # Calculer la moyenne des options pour tous les scrutins
+    if total_scrutins > 0:
+        average_options = total_options / total_scrutins
+    else:
+        average_options = 0
+
+    # Passer les scrutins et la moyenne des options au template
+    return render_template("scrutins.html", scrutins=scrutins, average_options=average_options)
 
 @scrutin_routes.route('/scrutins/add', methods=["GET", "POST"])
 def create_scrutin():
@@ -62,7 +73,6 @@ def create_scrutin():
             return render_template("scrutin_form/add_scrutin_form.html", error=f"Une erreur est survenue lors de la création du scrutin : {str(e)}")
         
     return render_template("scrutin_form/add_scrutin_form.html")
-
 
 @scrutin_routes.route('/scrutins/edit/<string:scrutin_id>', methods=["GET", "POST"])
 def edit_scrutin(scrutin_id):
@@ -127,13 +137,71 @@ def edit_scrutin(scrutin_id):
     return render_template("scrutin_form/edit_scrutin_form.html", scrutin_id=scrutin_id, scrutin=scrutin)
 
 
+# Récupération des 10 scrutins avec le plus de participants.@scrutin_routes.route('/scrutins/top-participated', methods=["GET"])
+def top_participated_scrutins():
+    try:
+        scrutins, average_votes = ScrutinModel.find_top_10_participated_scrutins()
+        return render_template('scrutins_top_participated.html', scrutins=scrutins, average_votes=average_votes)
+    except Exception as e:
+        return jsonify({"error": f"Une erreur est survenue : {str(e)}"}), 500
+
+
+
 
 @scrutin_routes.route('/scrutins/<string:scrutin_id>', methods=["GET", "POST"])
 def add_vote(scrutin_id):
     """Page de vote d'un scrutin"""
     
     if 'user_id' not in session:
-        return redirect(url_for('user.login')) 
+        return redirect(url_for('user.login'))
+    
+    user_id = session.get('user_id')
+    current_time = datetime.now()
+    scrutin = ScrutinModel.find_by_id(scrutin_id)
+
+    if request.method == "POST":
+        # Récupérer toutes les données du formulaire
+        print("Données brutes du formulaire :")
+        print(request.form)  # Affiche tout ce que le formulaire envoie
+
+        # Récupérer une clé spécifique (par exemple 'preferences[]')
+        preferences = request.form.getlist('preferences[]')  # Utilisez getlist pour récupérer une liste
+        print("Données de 'preferences[]' :")
+        print(preferences)
+
+        # Si l'utilisateur à déja voté
+        vote_info = ScrutinModel.find_user_vote(user_id, scrutin_id)
+        if vote_info:
+            ScrutinModel.updateVote(preferences, user_id, scrutin_id)
+            return redirect(url_for('scrutin.add_vote', scrutin_id=scrutin_id))  # À adapter selon ta logique de redirection
+
+        #Si l'utilisateur n'as pas encore voté
+        else:
+            ScrutinModel.addVote(preferences, user_id, scrutin_id)
+            return redirect(url_for('scrutin.add_vote', scrutin_id=scrutin_id))  # À adapter selon ta logique de redirection
+
+
+
+
+    # # Verifier si le scrutin est en cours
+    # if scrutin['start_date'] < current_time and scrutin['end_date'] > current_time:
+    #     return render_template("scrutin_form/vote_scrutin_form.html", scrutin_id=scrutin_id)
+    
+
+    # Verifier si le scrutin est terminé
+    if scrutin['end_date'] < current_time:
+        return render_template("results.html", scrutin_id=scrutin_id)
+    
+    # Verifier si l'utilisateur à déjà voté
+    vote_info = ScrutinModel.find_user_vote(user_id, scrutin_id)
+    if vote_info:
+        print(f"L'utilisateur a voté avec les informations suivantes : {vote_info}")
+        return render_template("scrutin_form/vote_scrutin_form.html", current_time=current_time, scrutin_id=scrutin_id, vote_info=vote_info, scrutin=scrutin)
+    else:
+        print("L'utilisateur n'a pas voté pour ce scrutin.")
+        return render_template("scrutin_form/vote_scrutin_form.html", current_time=current_time, scrutin_id=scrutin_id, scrutin=scrutin)
+    
+
     # ScrutinModel.addVote(["day", "theory", "nature", "hot", "certainly"], "6782803d7efa1e356fabc503", "678280427efa1e356fabc56a")
     # if request.method == "POST":
     #     # Récupérer les données du formulaire
