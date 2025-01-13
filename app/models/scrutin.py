@@ -100,6 +100,7 @@ class ScrutinModel:
                     "start_date": "$scrutin.start_date",
                     "end_date": "$scrutin.end_date",
                     "options": "$scrutin.options",
+                    "votes": "$scrutin.votes",
                     "voter_preferences": "$scrutin.votes.preferences",
                     "creator_pseudonym": "$pseudonym" 
                 }}
@@ -213,7 +214,63 @@ class ScrutinModel:
                 return False  # Aucun changement n'a été effectué, mais le scrutin a été trouvé
         else:
             return False  # Aucun scrutin trouvé pour la mise à jour
+    
+    @staticmethod
+    def find_by_id(scrutin_id):
+        """Récupère le scrutin qui correspond à l'id du user et à l'id du scrutin"""
+        scrutin_cursor = current_app.db.users.aggregate([
+            {"$unwind": "$scrutin"},
+            {"$match": {"scrutin.scrutin_id": ObjectId(scrutin_id)}},
+            {"$project": {  # Sélectionner les champs nécessaires
+                    "_id": 0,
+                    "scrutin_id": "$scrutin.scrutin_id",
+                    "title": "$scrutin.title",
+                    "description": "$scrutin.description",
+                    "created_at": "$scrutin.created_at",
+                    "is_active": "$scrutin.is_active",
+                    "start_date": "$scrutin.start_date",
+                    "end_date": "$scrutin.end_date",
+                    "options": "$scrutin.options",
+                    "voter_preferences": "$scrutin.votes.preferences",
+                    "creator_pseudonym": "$pseudonym" 
+                }}
+        ])
+        # Essayer d'obtenir le premier résultat du curseur
+        scrutin = next(scrutin_cursor, None)
+    
+         # Si aucun résultat n'est trouvé
+        if scrutin is None:
+            return None
+        return scrutin
+
+
+    @staticmethod
+    def find_user_vote(user_id, scrutin_id):
+        """
+        Vérifier si un utilisateur a voté pour un scrutin et récupérer ses préférences."""
         
+        # Pipeline d'agrégation MongoDB
+        result = current_app.db.users.aggregate([
+            {"$unwind": "$scrutin"},  # Décomposer chaque scrutin
+            {"$match": {"scrutin.scrutin_id": ObjectId(scrutin_id)}},  # Filtrer par scrutin_id
+            {"$unwind": "$scrutin.votes"},  # Décomposer les votes
+            {"$match": {"scrutin.votes.voter_id": ObjectId(user_id)}},  # Filtrer par voter_id
+            {"$project": {  # Sélectionner uniquement les informations nécessaires
+                "_id": 0,
+                "created_at": "$scrutin.votes.created_at",
+                "preferences": "$scrutin.votes.preferences",
+                "creator_pseudonym": "$pseudonym" 
+
+            }}
+        ])
+        
+        # Extraire le premier résultat s'il existe
+        vote = next(result, None)
+        return vote if vote else None
+
+
+
+
 
     @staticmethod
     def addVote(votes, user_id, scrutin_id):
@@ -229,4 +286,21 @@ class ScrutinModel:
             {"$push": {
                 "scrutin.$.votes": new_vote
             }}
+        )
+    
+
+    @staticmethod
+    def updateVote(new_preferences, user_id, scrutin_id):
+        """Met à jour le vote d'un utilisateur pour un scrutin spécifique."""
+        result = current_app.db.users.update_one(
+            {
+                "scrutin.scrutin_id": ObjectId(scrutin_id),  # Cherche le scrutin
+                "scrutin.votes.voter_id": ObjectId(user_id)  # Vérifie que l'utilisateur a déjà voté
+            },
+            {
+                "$set": {
+                    "scrutin.$.votes.$.preferences": new_preferences,
+                    "scrutin.$.votes.$.created_at": datetime.now()  # Met à jour la date du vote
+                }
+            }
         )

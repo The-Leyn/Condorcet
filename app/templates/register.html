@@ -6,25 +6,18 @@
 <div class="form-container">
     <h2>Inscrivez-vous</h2>
     <form action="{{ url_for('user.register') }}" method="POST">
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
         <div class="align-input">
-            <!-- <label for="lastname">NOM*</label> -->
             <input type="text" id="lastname" name="lastname" placeholder="NOM*" required="required">
             
-            <!-- <label for="firstlast">PRÉNOM*</label> -->
-            <input type="text" id="firstlast" name="firstlast" placeholder="PRÉNOM*" required="required">
+            <input type="text" id="firstname" name="firstname" placeholder="PRÉNOM*" required="required">
         </div>
-        
-        <!-- <label for="pseudonyme">PSEUDONYME*</label> -->
         <input type="text" id="pseudonyme" name="pseudonym" placeholder="PSEUDONYME*" required="required">
-
-        <!-- <label for="email">VOTRE EMAIL*</label> -->
         <input type="text" id="email" name="email" placeholder="VOTRE EMAIL*" required="required">
-
-        <!-- <label for="password">MOT DE PASSE*</label> -->
         <input type="password" id="password" name="password" placeholder="MOT DE PASSE*" required="required">
-
-        <input type="password" id="password" name="password" placeholder="RÉPÉTER MOT DE PASSE*" required="required">
-        
+        <input type="password" id="repeatpassword" name="repeatpassword" placeholder="RÉPÉTER MOT DE PASSE*" required="required">
         <button class="btn-border-anim" type="submit">Se connecter</button>
         
     </form>

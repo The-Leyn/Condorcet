@@ -1,6 +1,7 @@
 # app/routes/user_routes.py
 from flask import Blueprint, jsonify, render_template, request, jsonify, redirect, url_for, session
 from app.models.user import UserModel
+from werkzeug.security import generate_password_hash
 from app.models.scrutin import ScrutinModel
 from datetime import datetime
 
@@ -70,9 +71,48 @@ def logout():
     else:
         UserModel.logout()
         return redirect(url_for('main.home'))
-
-@user_routes.route('/register', methods=['GET'])
+    
+@user_routes.route("/register", methods=["GET", "POST"])
 def register():
-    from flask import request, render_template
+    
+    if 'user_id' in session:
+        return redirect(url_for('main.home'))
+    
+    if request.method == "GET":
+        return render_template("register.html")
+    
+    if request.method == "POST":
 
-    return render_template('register.html')
+        email = request.form.get('email')
+        pseudonym = request.form.get('pseudonym')
+        firstname = request.form.get('firstname')
+        lastname = request.form.get('lastname')
+        password = request.form.get('password')
+        repeatpassword = request.form.get('repeatpassword')
+
+        if not email or not password or not pseudonym or not firstname or not lastname:
+            error_message = "Veuillez remplir tous les champs."
+            return render_template("register.html", error=error_message)
+
+        if password != repeatpassword:
+            error_message = "Les mots de passe ne correspondent pas."
+            return render_template("register.html", error=error_message)
+        
+        # création de l'utilisateur
+        try:
+            user_data = {
+                "pseudonym": pseudonym,
+                "firstname": firstname,
+                "lastname": lastname,
+                "email": email,
+                "password_hash": password,
+                "is_active": True,
+                "role": "user",
+                "scrutin": [],
+            }
+            UserModel.register(user_data)
+            return redirect(url_for('main.home'))
+        except ValueError as e:
+            error_message = str(e)
+            return render_template("register.html", error=error_message)
+            
