@@ -55,7 +55,7 @@ def create_scrutin():
             )
 
             # Rediriger vers une page de succès ou d'affichage du scrutin
-            return redirect(url_for('user.get_user_profile'))  # À adapter selon ta logique de redirection
+            return redirect(url_for('user.get_user_profile'))
 
         except Exception as e:
             # Si une exception se produit, afficher l'erreur
@@ -84,7 +84,7 @@ def edit_scrutin(scrutin_id):
 
         # Vérification si tous les champs sont remplis
         if not title or not description or not start_date or not end_date:
-            return redirect(url_for('user.edit_scrutin', scrutin_id=scrutin_id))  # À adapter selon ta logique de redirection
+            return redirect(url_for('user.edit_scrutin', scrutin_id=scrutin_id))
         # Vérification si la end_date est supérieure à la start_date
         if end_date <= start_date:
             return render_template("scrutin_form/edit_scrutin_form.html", scrutin_id=scrutin_id, scrutin=getScrutin, error="La date de fin doit être supérieure à la date de début.")
@@ -111,7 +111,7 @@ def edit_scrutin(scrutin_id):
                 return render_template("scrutin_form/edit_scrutin_form.html", error="Le scrutin n'a pas pu être mis à jour.")
             # Rediriger vers une page de succès ou d'affichage du scrutin
             flash("L'opération s'est bien déroulée.", "success")
-            return redirect(url_for('scrutin.edit_scrutin', scrutin_id=scrutin_id))  # À adapter selon ta logique de redirection
+            return redirect(url_for('scrutin.edit_scrutin', scrutin_id=scrutin_id))
 
         except Exception as e:
             # Si une exception se produit, afficher l'erreur
@@ -139,89 +139,92 @@ def add_vote(scrutin_id):
     current_time = datetime.now()
     scrutin = ScrutinModel.find_by_id(scrutin_id)
 
+    if not scrutin:
+        return redirect(url_for('scrutin.index_scrutin'))  # Rediriger si le scrutin n'existe pas
+
+    # Vérifier si le scrutin est terminé
+    if scrutin['end_date'] < current_time:
+        return redirect(url_for('scrutin.result', scrutin_id=scrutin_id)) 
+
     if request.method == "POST":
-        # Récupérer toutes les données du formulaire
-        print("Données brutes du formulaire :")
-        print(request.form)  # Affiche tout ce que le formulaire envoie
+        # Récupérer les préférences du formulaire
+        preferences = request.form.getlist('preferences[]')
+        print("Données de 'preferences[]' :", preferences)
 
-        # Récupérer une clé spécifique (par exemple 'preferences[]')
-        preferences = request.form.getlist('preferences[]')  # Utilisez getlist pour récupérer une liste
-        print("Données de 'preferences[]' :")
-        print(preferences)
+        # Récupérer les options valides pour ce scrutin
+        options = ScrutinModel.get_scrutin_options(scrutin_id)  # Méthode à implémenter dans ton modèle
+        print("Options valides pour le scrutin :", options)
 
-        # Si l'utilisateur à déja voté
+        # Vérifier que toutes les préférences sont valides
+        if not set(preferences).issubset(set(options)):
+            print("Erreur : Les préférences contiennent des valeurs non valides.")
+            return render_template(
+                "scrutin_form/vote_scrutin_form.html", 
+                scrutin_id=scrutin_id, 
+                scrutin=scrutin, 
+                error="Certaines des préférences soumises ne sont pas valides.",
+                current_time=current_time, 
+            )
+
+        # Vérifier si l'utilisateur a déjà voté
         vote_info = ScrutinModel.find_user_vote(user_id, scrutin_id)
         if vote_info:
             ScrutinModel.updateVote(preferences, user_id, scrutin_id)
-            return redirect(url_for('scrutin.add_vote', scrutin_id=scrutin_id))  # À adapter selon ta logique de redirection
-
-        #Si l'utilisateur n'as pas encore voté
+            return redirect(url_for('scrutin.add_vote', scrutin_id=scrutin_id)) 
         else:
             ScrutinModel.addVote(preferences, user_id, scrutin_id)
-            return redirect(url_for('scrutin.add_vote', scrutin_id=scrutin_id))  # À adapter selon ta logique de redirection
+            return redirect(url_for('scrutin.add_vote', scrutin_id=scrutin_id))
 
-
-
-
-    # # Verifier si le scrutin est en cours
-    # if scrutin['start_date'] < current_time and scrutin['end_date'] > current_time:
-    #     return render_template("scrutin_form/vote_scrutin_form.html", scrutin_id=scrutin_id)
-    
-
-    # Verifier si le scrutin est terminé
-    if scrutin['end_date'] < current_time:
-        return render_template("results.html", scrutin_id=scrutin_id)
-    
-    # Verifier si l'utilisateur à déjà voté
+    # Vérifier si l'utilisateur a déjà voté
     vote_info = ScrutinModel.find_user_vote(user_id, scrutin_id)
     if vote_info:
         print(f"L'utilisateur a voté avec les informations suivantes : {vote_info}")
-        return render_template("scrutin_form/vote_scrutin_form.html", current_time=current_time, scrutin_id=scrutin_id, vote_info=vote_info, scrutin=scrutin)
+        return render_template(
+            "scrutin_form/vote_scrutin_form.html", 
+            current_time=current_time, 
+            scrutin_id=scrutin_id, 
+            vote_info=vote_info, 
+            scrutin=scrutin
+        )
     else:
         print("L'utilisateur n'a pas voté pour ce scrutin.")
-        return render_template("scrutin_form/vote_scrutin_form.html", current_time=current_time, scrutin_id=scrutin_id, scrutin=scrutin)
+        return render_template(
+            "scrutin_form/vote_scrutin_form.html", 
+            current_time=current_time, 
+            scrutin_id=scrutin_id, 
+            scrutin=scrutin
+        )
+
+
+
+@scrutin_routes.route('/scrutins/result/<string:scrutin_id>', methods=["GET", "POST"])
+def result(scrutin_id):
+    if 'user_id' not in session:
+        return redirect(url_for('user.login'))
+    user_id = session.get('user_id')
+    current_time = datetime.now()
+
+    scrutin = ScrutinModel.find_by_id(scrutin_id)
+
+    #Vérifier si le scrutin est terminé
+    if scrutin['end_date'] > current_time:
+        print("Le scrutin n'est pas encore terminé")
+        return redirect(url_for('scrutin.add_vote', scrutin_id=scrutin_id))
     
-   
+
+    if request.method == "POST":
+
+        isScrutin = ScrutinModel.find_by_user_and_id(user_id, scrutin_id)
+         # Si c'est le user est le créateur du scrutin alors calculé   
+        if isScrutin:
+            ScrutinModel.calculate_condorcet_and_save(scrutin_id, user_id)
 
 
+    # Vérifier si les résultats on été calculé
+    result = ScrutinModel.get_scrutin_result(scrutin_id)
+    if result:
+        # Si oui les afficher
 
-
-
-    # ScrutinModel.addVote(["day", "theory", "nature", "hot", "certainly"], "6782803d7efa1e356fabc503", "678280427efa1e356fabc56a")
-    # if request.method == "POST":
-    #     # Récupérer les données du formulaire
-    #     title = request.form.get('title')
-    #     description = request.form.get('description')
-    #     start_date = request.form.get('start_date')
-    #     end_date = request.form.get('end_date')
-    #     options = request.form.getlist('options[]')  # Récupérer toutes les options du formulaire
-
-    #     # Vérification si tous les champs sont remplis
-    #     if not title or not description or not start_date or not end_date:
-    #         return render_template("scrutin_form/add_scrutin_form.html", error="Tous les champs doivent être remplis.")
-        
-    #     # Vérification si au moins 2 options sont fournies
-    #     if len(options) < 2:
-    #         return render_template("scrutin_form/add_scrutin_form.html", error="Il doit y avoir au moins 2 options.")
-        
-    #     if any(option.strip() == "" for option in options):  # On vérifie si une option est vide
-    #         return render_template("scrutin_form/add_scrutin_form.html", error="Aucune option ne peut être vide.")
-    #     try:
-    #         # Appeler la méthode createScrutin() pour créer le scrutin
-    #         scrutin = ScrutinModel.createScrutin(
-    #             title=title,
-    #             description=description,
-    #             start_date=start_date,
-    #             end_date=end_date,
-    #             options=options,
-    #             user_id=session['user_id']  # L'ID de l'utilisateur venant de la session
-    #         )
-
-    #         # Rediriger vers une page de succès ou d'affichage du scrutin
-    #         return redirect(url_for('user.get_user_profile'))  # À adapter selon ta logique de redirection
-
-    #     except Exception as e:
-    #         # Si une exception se produit, afficher l'erreur
-    #         return render_template("scrutin_form/add_scrutin_form.html", error=f"Une erreur est survenue lors de la création du scrutin : {str(e)}")
-        
-    return render_template("scrutin_form/vote_scrutin_form.html", scrutin_id=scrutin_id)
+        return render_template("results.html", scrutin_id=scrutin_id, result=result, session_user_id=user_id)
+    else:
+        return render_template("results.html", scrutin_id=scrutin_id, scrutin=scrutin, session_user_id=user_id)

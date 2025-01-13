@@ -1,1 +1,24 @@
 <h1>Résultat</h1>
+<h3>sdfg</h3>
+
+<pre>{{result}}</pre>
+{% if result.ranking %}
+<pre>{{ result.ranking }}</pre>
+<ol>
+    {% for r in result.ranking %}
+    <li>{{ r }}</li>
+    {% endfor %}
+</ol>
+{% else %}
+{{ result._id }}
+<br>
+{{ session_user_id }}
+    <!-- Bien ajouter le |string pour la comparaison car ce sont deux type différent (ObjectId vs string) -->
+    {% if result._id|string == session_user_id %}
+        <form action="{{ url_for('scrutin.result', scrutin_id=scrutin_id|string) }}" method="post">
+            <button>Calculer le résultat</button>
+        </form>
+    {% else %}
+        <p>Le résultat du scrutin n'a pas encore été calculé.</p>
+    {% endif %}
+{% endif %}

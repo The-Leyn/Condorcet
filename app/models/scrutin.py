@@ -72,7 +72,9 @@ class ScrutinModel:
                     "start_date": "$scrutin.start_date", 
                     "end_date": "$scrutin.end_date", 
                     "options": "$scrutin.options", 
-                    "votes": "$scrutin.votes"
+                    "votes": "$scrutin.votes",
+                    "creator_pseudonym": "$pseudonym" 
+
                 }}
             ])
         )
@@ -231,6 +233,7 @@ class ScrutinModel:
                     "start_date": "$scrutin.start_date",
                     "end_date": "$scrutin.end_date",
                     "options": "$scrutin.options",
+                    "votes": "$scrutin.votes",
                     "voter_preferences": "$scrutin.votes.preferences",
                     "creator_pseudonym": "$pseudonym" 
                 }}
@@ -267,6 +270,15 @@ class ScrutinModel:
         # Extraire le premier résultat s'il existe
         vote = next(result, None)
         return vote if vote else None
+    
+
+    @staticmethod
+    def get_scrutin_options(scrutin_id):
+        # Remplace par la logique qui récupère les options de la base de données
+        scrutin = ScrutinModel.find_by_id(scrutin_id)
+        if scrutin:
+            return scrutin['options']  # Supposons que les options sont stockées dans 'options'
+        return []
 
 
 
@@ -288,19 +300,130 @@ class ScrutinModel:
             }}
         )
     
-
     @staticmethod
     def updateVote(new_preferences, user_id, scrutin_id):
         """Met à jour le vote d'un utilisateur pour un scrutin spécifique."""
+        # Étape 1 : Trouver le scrutin et le vote correspondants
+        user = current_app.db.users.find_one(
+            {
+                "scrutin.scrutin_id": ObjectId(scrutin_id),
+                "scrutin.votes.voter_id": ObjectId(user_id)
+            },
+            {"scrutin.$": 1}  # Récupère uniquement le scrutin correspondant
+        )
+        
+        if not user or "scrutin" not in user:
+            return False  # Aucun scrutin ou utilisateur trouvé
+
+        # Trouver l'index du vote
+        scrutin = user["scrutin"][0]
+        votes = scrutin.get("votes", [])
+        vote_index = next(
+            (index for index, vote in enumerate(votes) if vote["voter_id"] == ObjectId(user_id)),
+            None
+        )
+        
+        if vote_index is None:
+            return False  # Aucun vote correspondant trouvé
+
+        # Étape 2 : Mettre à jour les préférences
         result = current_app.db.users.update_one(
             {
-                "scrutin.scrutin_id": ObjectId(scrutin_id),  # Cherche le scrutin
-                "scrutin.votes.voter_id": ObjectId(user_id)  # Vérifie que l'utilisateur a déjà voté
+                "scrutin.scrutin_id": ObjectId(scrutin_id),
+                f"scrutin.votes.{vote_index}.voter_id": ObjectId(user_id)
             },
             {
                 "$set": {
-                    "scrutin.$.votes.$.preferences": new_preferences,
-                    "scrutin.$.votes.$.created_at": datetime.now()  # Met à jour la date du vote
+                    f"scrutin.$.votes.{vote_index}.preferences": new_preferences,
+                    f"scrutin.$.votes.{vote_index}.created_at": datetime.now()
                 }
             }
         )
+
+        return result.modified_count > 0
+
+
+
+    @staticmethod
+    def calculate_condorcet_and_save(scrutin_id, user_id):
+        """Calcule le classement Condorcet pour un scrutin donné par son ID."""
+        # Récupération du scrutin par ID
+        scrutin = ScrutinModel.find_by_id(scrutin_id)
+        if not scrutin:
+            return {"success": False, "message": "Scrutin non trouvé"}
+
+        # Liste des options et initialisation des comparaisons
+        options = scrutin["options"]
+        pairwise_comparison = {option: {op: 0 for op in options if op != option} for option in options}
+
+        # Collecte des votes
+        votes = scrutin["votes"]
+
+        # Comparaisons par paires pour chaque vote
+        for vote in votes:
+            preferences = vote["preferences"]
+            for i, preferred in enumerate(preferences):
+                for less_preferred in preferences[i + 1:]:
+                    pairwise_comparison[preferred][less_preferred] += 1
+
+        # Calcul des scores Condorcet
+        scores = {option: 0 for option in options}
+        for option1 in options:
+            for option2 in options:
+                if option1 != option2:
+                    if pairwise_comparison[option1][option2] > pairwise_comparison[option2][option1]:
+                        scores[option1] += 1
+
+        # Classement final par ordre décroissant des scores
+        ranking = sorted(scores, key=lambda option: scores[option], reverse=True)
+
+        # Création de l'objet result
+        result = {
+            "ranking": ranking,
+            "scores": scores,
+            "pairwise_comparison": pairwise_comparison,
+            "calculated_at": datetime.now()
+        }
+
+        # Mise à jour du scrutin spécifique dans l'utilisateur
+        update_result = current_app.db.users.update_one(
+            {"_id": ObjectId(user_id), "scrutin.scrutin_id": ObjectId(scrutin_id) },
+            {"$set": {"scrutin.$.result": result}}
+        )
+
+
+        if update_result.modified_count == 0:
+            print("Le résultat n'a pas pu être enregistré dans le scrutin.")
+            return {"success": False, "message": "Le résultat n'a pas pu être enregistré dans le scrutin."}
+        print("Résultat enregistré avec succès.")
+        return {"success": True, "message": "Résultat enregistré avec succès.", "result": result}
+    
+    @staticmethod
+    def get_scrutin_result(scrutin_id):
+        scrutin_cursor = current_app.db.users.aggregate([
+            {"$unwind": "$scrutin"},
+            {"$match": {"scrutin.scrutin_id": ObjectId(scrutin_id)}},
+            {"$project": {  # Sélectionner les champs nécessaires
+                    "_id": 1,
+                    "scrutin_id": "$scrutin.scrutin_id",
+                    "title": "$scrutin.title",
+                    "description": "$scrutin.description",
+                    "created_at": "$scrutin.created_at",
+                    "is_active": "$scrutin.is_active",
+                    "start_date": "$scrutin.start_date",
+                    "end_date": "$scrutin.end_date",
+                    "options": "$scrutin.options",
+                    "votes": "$scrutin.votes",
+                    "voter_preferences": "$scrutin.votes.preferences",
+                    "creator_pseudonym": "$pseudonym",
+                    "result": "$scrutin.result",
+                    "ranking": "$scrutin.result.ranking"
+                }}
+        ])
+        # Essayer d'obtenir le premier résultat du curseur
+        scrutin = next(scrutin_cursor, None)
+    
+         # Si aucun résultat n'est trouvé
+        if scrutin is None:
+            return None
+        return scrutin

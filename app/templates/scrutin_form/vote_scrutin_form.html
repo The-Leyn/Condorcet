@@ -2,13 +2,13 @@
 <p>{{ scrutin['description'] }}</p>
 <h2>Créer par @{{ scrutin['creator_pseudonym'] }}</h2>
 
+
+{% if scrutin.start_date < current_time and scrutin['end_date'] > current_time %}
 {% if vote_info %}
     <p>Reclassez chaque option par ordre de préférence</p>
 {% else %}
     <p>Classez chaque option par ordre de préférences</p>
 {% endif %}
-
-{% if scrutin.start_date < current_time and scrutin['end_date'] > current_time %}
 
 <form action="" method="post">
     {% if vote_info %} 

@@ -19,6 +19,7 @@
     <li>Date de début : {{ scrutin.start_date.strftime("%d/%m/%Y %H:%M:%S") }}</li>
     <li>Date de fin : {{ scrutin.end_date.strftime("%d/%m/%Y %H:%M:%S") }}</li>
     <li>Question : {{ scrutin.title }}</li>
+    <li>Créer par : @{{ scrutin.creator_pseudonym }}</li>
     <li>Description : {{ scrutin.description }}</li>
     <li>Nombres de participants : {{ scrutin.votes|length }}</li>
     <li>Options
