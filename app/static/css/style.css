@@ -334,19 +334,15 @@ a {
         span {
           display: flex;
         }
-
-        &:nth-of-type(3) {
-          color: var(--DangerColor);
-        }
       }
 
       button {
-        border: none;
-        background: transparent;
-        color: var(--PrimaryColor);
         display: flex;
         align-items: center;
         gap: 10px;
+        border: none;
+        background: transparent;
+        color: var(--DangerColor);
         cursor: pointer;
         font-size: 1.2rem;
       }
