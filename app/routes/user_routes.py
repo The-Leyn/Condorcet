@@ -65,6 +65,9 @@ def logout():
         UserModel.logout()
         return redirect(url_for('main.home'))
     
+from flask import render_template, request, redirect, url_for, flash
+import re
+from app.models.user import UserModel
 
 @user_routes.route("/register", methods=["GET", "POST"])
 def register():
@@ -92,6 +95,15 @@ def register():
             error_message = "Les mots de passe ne correspondent pas."
             return render_template("register.html", error=error_message)
         
+        # Vérification du format de l'email
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            error_message = "Adresse e-mail invalide."
+            return render_template("register.html", error=error_message)
+
+        if UserModel.find_by_email(email):
+            error_message = "L'email est déjà utilisé."
+            return render_template("register.html", error=error_message)
+
         # création de l'utilisateur
         try:
             user_data = {
@@ -105,11 +117,11 @@ def register():
                 "scrutin": [],
             }
             UserModel.register(user_data)
+            print("Redirection vers la page d'accueil")
             return redirect(url_for('main.home'))
         except ValueError as e:
             error_message = str(e)
             return render_template("register.html", error=error_message)
-
 
 @user_routes.route("/edit-profile", methods=["GET", "POST"])
 def edit_user():

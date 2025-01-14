@@ -1,3 +1,4 @@
+import re
 from flask import current_app, session
 from bson import ObjectId
 from werkzeug.security import check_password_hash
@@ -27,6 +28,11 @@ class UserModel:
     def find_by_email(email):
         """Trouve un utilisateur par son email."""
         return current_app.db.users.find_one({"email": email})
+    
+    @staticmethod
+    def find_by_pseudonym(pseudonym):
+        """Trouve un utilisateur pas son pseudonym"""
+        return current_app.db.users.find_one({"pseudonym": pseudonym})
 
 # CONNEXION
 
@@ -64,6 +70,10 @@ class UserModel:
     def register(user_data):
         email = user_data["email"]
         pseudonym = user_data["pseudonym"]
+
+        # Vérification du format de l'email
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            raise ValueError("Adresse e-mail invalide.")
 
         # Vérifie si un utilisateur existe
         existing_user = current_app.db.users.find_one({
