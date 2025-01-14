@@ -25,7 +25,6 @@ class ScrutinModel:
         )
         return scrutins
 
-
     @staticmethod
     def find_10_last():
         """Récupérer les 10 derniers scrutins."""
@@ -279,33 +278,19 @@ def average_options_per_scrutin():
 
 @staticmethod
 def find_top_10_participated_scrutins():
-    """
-    Récupérer les 10 scrutins avec le plus de participants.
-    """
-    result = current_app.db.users.aggregate([
-        {"$unwind": "$scrutin"},  # Séparer chaque scrutin
-        {"$project": {  # Ajouter un champ pour compter le nombre de votes
-            "scrutin_id": "$scrutin.scrutin_id",
-            "title": "$scrutin.title",
-            "description": "$scrutin.description",
-            "created_at": "$scrutin.created_at",
-            "is_active": "$scrutin.is_active",
-            "start_date": "$scrutin.start_date",
-            "end_date": "$scrutin.end_date",
-            "options": "$scrutin.options",
-            "votes_count": {"$size": "$scrutin.votes"}  # Compter les votes
-        }},
-        {"$sort": {"votes_count": -1}},  # Trier par nombre de votes décroissant
-        {"$limit": 10}  # Limiter à 10 résultats
-    ])
+    """ Récupérer les 10 scrutins ayant le plus de participants."""
+    try:
+        # Supposons que "votes" contient une liste des votes pour chaque scrutin.
+        scrutins = list(current_app.db.scrutins.aggregate([
+            {"$addFields": {"vote_count": {"$size": {"$ifNull": ["$votes", []]}}}},  # Calculer le nombre de votes
+            {"$sort": {"vote_count": -1}},  # Trier par nombre de votes décroissant
+            {"$limit": 10}  # Limiter à 10 résultats
+        ]))
+        
+        # Calculer la moyenne des votes pour ces scrutins
+        total_votes = sum(scrutin.get("vote_count", 0) for scrutin in scrutins)
+        average_votes = round(total_votes / len(scrutins), 2) if scrutins else 0
 
-    top_scrutins = list(result)  # Convertir le curseur en liste
-
-    # Calculer la moyenne des votes pour les 10 scrutins les plus populaires
-    if top_scrutins:
-        total_votes = sum(scrutin['votes_count'] for scrutin in top_scrutins)
-        average_votes = total_votes / len(top_scrutins)
-    else:
-        average_votes = 0
-
-    return top_scrutins, average_votes  # Retourner à la fois les scrutins et la moyenne des votes
+        return scrutins, average_votes
+    except Exception as e:
+        raise Exception(f"Erreur lors de la récupération des scrutins : {str(e)}")

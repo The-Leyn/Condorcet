@@ -2,6 +2,8 @@ from flask import current_app, session
 from bson import ObjectId
 from werkzeug.security import check_password_hash
 
+
+
 class UserModel:
     @staticmethod
     def find_by_id_user(id_user):
@@ -53,3 +55,14 @@ class UserModel:
         """Déconnecte l'utilisateur."""
         session.clear()
         return {"message": "Déconnexion réussie."}
+
+    @staticmethod
+    def count_users():
+        """Compter le nombre total d'utilisateurs inscrits."""
+        return current_app.db.users.count_documents({})
+    # print(UserModel.count_users())
+
+    @staticmethod
+    def count_active_users():
+        """Compter le nombre d'utilisateurs actifs."""
+        return current_app.db.users.count_documents({"is_active": True})

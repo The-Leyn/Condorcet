@@ -4,11 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste des scrutins</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1, h2 {
+            color: #0056b3;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #fff;
+            margin: 10px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        p {
+            margin: 5px 0;
+        }
+        strong {
+            color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <h1>Liste des scrutins</h1>
 
-    <h2>Moyenne des options pour tous les scrutins: {{ average_options }}</h2>
+    <h2>Moyenne des options pour tous les scrutins : {{ average_options }}</h2>
 
     {% if scrutins %}
         <ul>
@@ -26,6 +56,23 @@
         </ul>
     {% else %}
         <p>Aucun scrutin trouvé.</p>
+    {% endif %}
+
+    <h2>Top 10 des scrutins avec le plus de participants</h2>
+    {% if top_scrutins %}
+        <ul>
+            {% for scrutin in top_scrutins %}
+                <li>
+                    <h2>{{ scrutin.title }}</h2>
+                    <p><strong>Description:</strong> {{ scrutin.description }}</p>
+                    <p><strong>Date de début:</strong> {{ scrutin.start_date }}</p>
+                    <p><strong>Date de fin:</strong> {{ scrutin.end_date }}</p>
+                    <p><strong>Votes:</strong> {{ scrutin.vote_count }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucun scrutin trouvé dans les top participants.</p>
     {% endif %}
 </body>
 </html>

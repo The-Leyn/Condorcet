@@ -1,1 +1,7 @@
- 
+<p>Nombre d'utilisateurs inscrits : {{ user_count }}</p>
+<p>Nombre d'utilisateurs actifs : {{ active_user_count }}</p>
+<ul>
+    {% for user in users %}
+        <li>{{ user.firstname }} {{ user.lastname }} ({{ user.email }})</li>
+    {% endfor %}
+</ul>
