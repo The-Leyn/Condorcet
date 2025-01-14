@@ -20,7 +20,7 @@
   </div>
 
   {% if scrutin.start_date < current_time and scrutin['end_date'] > current_time %}
-  <form action="">
+  <form action="" method="POST">
     {% if vote_info %} 
       <p>Classez chaque option par ordre de préférences</p>
       <ul id="sortable">

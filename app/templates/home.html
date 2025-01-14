@@ -1,20 +1,47 @@
-<pre>{{ session }}</pre>
-<pre>{{ scrutins }}</pre>
-<h2>Les 10 derniers scrutins</h2>
-{% for scrutin in scrutins %}
-<ul>
-    <li>Id de la question: {{ scrutin.scrutin_id }}</li>
-    <li>Date de création : {{ scrutin.created_at.strftime("%d/%m/%Y %H:%M:%S") }}</li>
-</ul>
-{% endfor %}
-<h2>Les 10 derniers scrutins actifs</h2>
-<pre>{{ scrutinsActive }}</pre>
+{% extends "base.html" %}
 
-{% for scrutin in scrutinsActive %}
-<ul>
-    <li>Id de la question: {{ scrutin._id }}</li>
-    <li>Date de création : {{ scrutin.created_at.strftime("%d/%m/%Y %H:%M:%S") }}</li>
-    <li>Date de fin : {{ scrutin.end_date.strftime("%d/%m/%Y %H:%M:%S") }}</li>
-    <li>Date du dernier vote : {{ scrutin.last_vote_date.strftime("%d/%m/%Y %H:%M:%S") }}</li>
-</ul>
-{% endfor %}
+{% block title %}Vote{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <section class="home-hero">
+        <div>
+            <img src="{{ url_for('static', filename='assets/svg/logo-xl.svg') }}" alt="logo condorcet">
+            <h1>Un système de vote à la hauteur de vos idées</h1>
+            <a href="" class="btn-border-anim">Commencer</a>
+        </div>
+        <a href="#condorcet-method"><img src="{{ url_for('static', filename='assets/svg/arrow-more.svg') }}" alt="suite de la page"></a>
+    </section>
+
+    <section id="condorcet-method">
+        <div>
+            <img src="{{ url_for('static', filename='assets/svg/schema-condorcet.svg') }}" alt="schéma de la méthode condorcet">
+        </div>
+        <div>
+            <h2>Qu'est-ce que la méthode Condorcet ?</h2>
+            <p>La méthode Condorcet est un système de vote où les participants classent les candidats par ordre de préférence. Le gagnant est celui qui est préféré dans toutes les confrontations face à face avec les autres. C'est un moyen simple et équitable de prendre des décisions collectives.</p>
+            <a href="https://fr.wikipedia.org/wiki/M%C3%A9thode_de_Condorcet" target="_blank">En savoir plus <img src="{{ url_for('static', filename='assets/svg/down-arrow.svg') }}" alt="plus d'informations"></a>
+        </div>
+    </section>
+
+    <section class="scrutins">
+        <div>
+            <h2>Les 10 derniers scrutins</h2>
+            <ul>
+                {% for scrutin in scrutins %}
+                <li><a href="{{ url_for('scrutin.add_vote', scrutin_id=scrutin.scrutin_id) }}"><span>{{ scrutin.created_at.strftime("%d/%m/%Y") }}</span>{{ scrutin.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div>
+            <h2>Les 10 derniers scrutins actifs</h2>
+            <ul>
+                {% for scrutin in scrutinsActive %}
+                <li><a href="{{ url_for('scrutin.add_vote', scrutin_id=scrutin.scrutin_id) }}"><span>{{ scrutin.created_at.strftime("%d/%m/%Y") }}</span>{{ scrutin.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+
+</div>
+{% endblock %}
