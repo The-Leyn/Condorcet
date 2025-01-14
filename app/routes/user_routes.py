@@ -116,3 +116,18 @@ def register():
             error_message = str(e)
             return render_template("register.html", error=error_message)
             
+@user_routes.route('/deactivate_account', methods=['POST'])
+def deactivate_account():
+    """Désactive le compte de l'utilisateur connecté."""
+    if 'user_id' not in session:
+        return redirect(url_for('user.login'))
+    
+    user_id = session['user_id']  # Récupérer l'utilisateur connecté
+    success = UserModel.deactivate_user(user_id)
+    
+    if success:
+        # Déconnecter l'utilisateur après désactivation
+        session.clear()
+        return redirect(url_for('user.login'))
+    else:
+        return redirect(url_for('user.profile'))
