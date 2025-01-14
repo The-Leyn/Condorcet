@@ -14,24 +14,25 @@
     {% else %}
         <p>Classez chaque option par ordre de préférences</p>
     {% endif %}
-    <h1>Si vous pouvier adoptez un animal lequel choisiriez-vous ?</h1>
+    <h1>{{ scrutin.title }}</h1>
     <p>Je propose ici de choisir entre plusieurs animaux de compagnies. Je pourrais ainsi me faire une idée de votre personnalité et de votre style de vie.</p>
-    <p>Créer par <span>@pramirez</span></p>
+    <p>Créer par <span>@{{ scrutin.creator_pseudonym }}</span></p>
   </div>
 
   {% if scrutin.start_date < current_time and scrutin['end_date'] > current_time %}
-  <form action="">
+  <form action="" method="POST">
+    <p>Classez chaque option par ordre de préférences</p>
     {% if vote_info %} 
-      <p>Classez chaque option par ordre de préférences</p>
       <ul id="sortable">
           {% for option in vote_info['preferences'] %}
             <li><input type="text" value="{{ option }}" name="preferences[]" readonly></li>
           {% endfor %}
       </ul>
     {% else %}
+      
       <ul id="sortable">
         {% for option in scrutin['options'] %}
-            <li><input type="text" name="preferences[]" value="{{ option }}"></li> 
+            <li><input type="text" name="preferences[]" value="{{ option }}" readonly></li> 
           {% endfor %}
       </ul>
     {% endif %}
