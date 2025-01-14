@@ -547,6 +547,7 @@ a {
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    text-align: center;
 
     h1 {
       color: var(--PrimaryColor);
@@ -556,12 +557,43 @@ a {
       color: var(--PrimaryColor);
     }
 
-    p:nth-of-type(2) {
+    p:nth-of-type(3) {
       font-size: 1.2rem;
+    }
+
+    & .result-trophy {
+      display: flex;
+      gap: 40px;
+      align-items: end;
+      font-size: 1.2rem;
+      padding: 40px 0;
+
+      div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+      }
+
+      & .trophy-1 {
+        color: #E7D38A;
+        height: 210px;
+        order: 2;
+      }
+
+      & .trophy-2 {
+        color: #CBCBCB;
+        order: 1;
+      }
+
+      & .trophy-3 {
+        color: #F59A58;
+        order: 3;
+      }
     }
   }
 
-  form {
+  form, .results {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -574,10 +606,6 @@ a {
       gap: 20px;
       list-style: none;
       width: 100%;
-
-      li {
-        width: 100%;
-      }
 
       input {
         width: 100%;
@@ -595,6 +623,18 @@ a {
         &:focus {
           outline: none;
         }
+      }
+
+      li {
+        width: 100%;
+      }
+
+      & .ranking {
+        width: 100%;
+        border: 1px solid var(--PrimaryColor);
+        padding: 10px;
+        background: var(--Background1);
+        color: #FFFFFF;
       }
     }
   }
@@ -930,6 +970,15 @@ p.error {
   .home-container .scrutins div ul {
     gap: 5px;
     line-height: 16px;
+  }
+
+  .vote-container div .result-trophy {
+    flex-direction: column;
+    
+    & .trophy-1 {
+      height: auto;
+      order: -1;
+    }
   }
 }
 
