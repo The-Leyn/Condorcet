@@ -1,34 +1,27 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier mon profil</title>
+    <title>Edit Profile</title>
 </head>
 <body>
-    <h1>Modifier mon profil</h1>
 
-    {% if error %}
-        <p style="color: red;">{{ error }}</p>
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
     {% endif %}
+{% endwith %}
 
-    <form action="" method="POST">
-        <label for="firstname">Prénom :</label>
-        <input type="text" id="firstname" name="firstname" value="{{ user.firstname }}" required>
+<form action="/edit-profile" method="post">
+    <input type="text" name="firstname" value="{{ user.firstname }}" placeholder="First Name">
+    <input type="text" name="lastname" value="{{ user.lastname }}" placeholder="Last Name">
+    <input type="email" name="email" value="{{ user.email }}" placeholder="Email">
+    <button type="submit">Update Profile</button>
+</form>
 
-        <label for="lastname">Nom :</label>
-        <input type="text" id="lastname" name="lastname" value="{{ user.lastname }}" required>
-
-        <label for="email">Email :</label>
-        <input type="email" id="email" name="email" value="{{ user.email }}" required>
-
-        <!-- Pseudonyme affiché mais non modifiable -->
-        <label for="pseudonym">Pseudonyme :</label>
-        <input type="text" id="pseudonym" name="pseudonym" value="{{ user.pseudonym }}" readonly>
-
-        <button type="submit">Enregistrer</button>
-    </form>
-
-    <a href="{{ url_for('user.get_user_profile') }}">Retour au profil</a>
 </body>
 </html>

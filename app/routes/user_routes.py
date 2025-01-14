@@ -4,6 +4,9 @@ from app.models.user import UserModel
 from werkzeug.security import generate_password_hash
 from app.models.scrutin import ScrutinModel
 from datetime import datetime
+from flask import request, render_template, flash, redirect, url_for, session, abort, jsonify
+import re
+
 
 # Définir le blueprint
 user_routes = Blueprint('user', __name__)
@@ -64,10 +67,6 @@ def logout():
     else:
         UserModel.logout()
         return redirect(url_for('main.home'))
-    
-from flask import render_template, request, redirect, url_for, flash
-import re
-from app.models.user import UserModel
 
 @user_routes.route("/register", methods=["GET", "POST"])
 def register():
@@ -123,6 +122,11 @@ def register():
             error_message = str(e)
             return render_template("register.html", error=error_message)
 
+def is_valid_email(email):
+    """Valide l'adresse e-mail."""
+    email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+    return re.match(email_regex, email) is not None
+
 @user_routes.route("/edit-profile", methods=["GET", "POST"])
 def edit_user():
     """Modifier le profil de l'utilisateur."""
@@ -148,8 +152,15 @@ def edit_user():
         # Validation des champs requis
         if not firstname or not lastname or not email:
             error_message = "Veuillez remplir tous les champs."
+            flash(error_message, "error")
+            return jsonify({"error": error_message}), 400  # Retourne un code 400 pour les champs manquants
+
+        # Validation de l'email
+        if not is_valid_email(email):
+            error_message = "Adresse e-mail invalide"
+            flash(error_message, "error")
             return render_template("edit_user.html", user=user, error=error_message)
-        
+
         try:
             # Mise à jour des données dans la base
             updated_data = {
@@ -159,8 +170,9 @@ def edit_user():
             }
             UserModel.update_user(user_id, updated_data)
             
-            # Redirige vers le profil mis à jour
+            # Message de succès et redirection
+            flash("Profil mis à jour avec succès.", "success")
             return redirect(url_for('user.get_user_profile'))
         except Exception as e:
-            error_message = str(e)
-            return render_template("edit_user.html", user=user, error=error_message)
+            flash(f"Une erreur est survenue : {str(e)}", "error")
+            return redirect(url_for('user.edit_user'))
