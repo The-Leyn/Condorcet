@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier mon profil</title>
+</head>
+<body>
+    <h1>Modifier mon profil</h1>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <form action="" method="POST">
+        <label for="firstname">Prénom :</label>
+        <input type="text" id="firstname" name="firstname" value="{{ user.firstname }}" required>
+
+        <label for="lastname">Nom :</label>
+        <input type="text" id="lastname" name="lastname" value="{{ user.lastname }}" required>
+
+        <label for="email">Email :</label>
+        <input type="email" id="email" name="email" value="{{ user.email }}" required>
+
+        <!-- Pseudonyme affiché mais non modifiable -->
+        <label for="pseudonym">Pseudonyme :</label>
+        <input type="text" id="pseudonym" name="pseudonym" value="{{ user.pseudonym }}" readonly>
+
+        <button type="submit">Enregistrer</button>
+    </form>
+
+    <a href="{{ url_for('user.get_user_profile') }}">Retour au profil</a>
+</body>
+</html>

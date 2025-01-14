@@ -5,6 +5,9 @@
     <li>Email : {{ user.email }}</li>
     <li>Rôle : {{ user.role }}</li>
 </ul>
+<a href="{{ url_for('user.edit_user') }}">
+    <button type="button">Modifier mon profil</button>
+</a>
 <h2>utilisateur</h2>
 <pre>{{user}}</pre>
 

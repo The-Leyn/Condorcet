@@ -109,4 +109,46 @@ def register():
         except ValueError as e:
             error_message = str(e)
             return render_template("register.html", error=error_message)
+
+
+@user_routes.route("/edit-profile", methods=["GET", "POST"])
+def edit_user():
+    """Modifier le profil de l'utilisateur."""
+    if 'user_id' not in session:
+        return redirect(url_for('user.login'))
+    
+    user_id = session.get('user_id')
+    user = UserModel.find_by_id_user(user_id)
+    
+    if not user:
+        return jsonify({"error": "Utilisateur non trouvé"}), 404
+
+    if request.method == "GET":
+        # Affiche le formulaire avec les données actuelles
+        return render_template("edit_user.html", user=user)
+
+    if request.method == "POST":
+        # Récupérer les nouvelles données
+        firstname = request.form.get("firstname")
+        lastname = request.form.get("lastname")
+        email = request.form.get("email")
+
+        # Validation des champs requis
+        if not firstname or not lastname or not email:
+            error_message = "Veuillez remplir tous les champs."
+            return render_template("edit_user.html", user=user, error=error_message)
+        
+        try:
+            # Mise à jour des données dans la base
+            updated_data = {
+                "firstname": firstname,
+                "lastname": lastname,
+                "email": email
+            }
+            UserModel.update_user(user_id, updated_data)
             
+            # Redirige vers le profil mis à jour
+            return redirect(url_for('user.get_user_profile'))
+        except Exception as e:
+            error_message = str(e)
+            return render_template("edit_user.html", user=user, error=error_message)

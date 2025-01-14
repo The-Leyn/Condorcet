@@ -59,7 +59,7 @@ class UserModel:
         session.clear()
         return {"message": "Déconnexion réussie."}
     
-#INSCRIPTION    
+# INSCRIPTION    
     @staticmethod
     def register(user_data):
         email = user_data["email"]
@@ -77,3 +77,21 @@ class UserModel:
         user_data["password_hash"] = generate_password_hash(user_data["password_hash"])
         result = current_app.db.users.insert_one(user_data)
         return result.inserted_id
+    
+# MODIFICATION
+    @staticmethod
+    def update_user(user_id, updated_data):
+        """Met à jour les informations d'un utilisateur."""
+        object_id = ObjectId(user_id)
+        
+        # Vérifie si l'utilisateur existe
+        user = current_app.db.users.find_one({"_id": object_id})
+        if not user:
+            raise ValueError("Utilisateur non trouvé.")
+
+        # Met à jour les champs dans la base de données
+        current_app.db.users.update_one(
+            {"_id": object_id},  # Filtre : utilisateur à mettre à jour
+            {"$set": updated_data}  # Mises à jour à appliquer
+        )
+
