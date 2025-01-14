@@ -76,3 +76,28 @@ class UserModel:
         user_data["password_hash"] = generate_password_hash(user_data["password_hash"])
         result = current_app.db.users.insert_one(user_data)
         return result.inserted_id
+    
+    @staticmethod
+    def deactivate_user(user_id):
+        """Désactive un utilisateur en supprimant les champs inutiles, sauf 'scrutins', 'pseudonym' et en mettant 'is_active' à False."""
+        # Récupérer l'utilisateur actuel pour identifier les champs existants
+        user = current_app.db.users.find_one({"_id": ObjectId(user_id)})
+
+        if not user:
+            raise ValueError("Utilisateur introuvable")
+
+        # Identifier les champs à supprimer
+        fields_to_keep = {"_id", "scrutin", "pseudonym", "is_active"}
+        fields_to_remove = {key: "" for key in user if key not in fields_to_keep}
+
+        # Mettre à jour l'utilisateur
+        result = current_app.db.users.update_one(
+            {"_id": ObjectId(user_id)},
+            {
+                "$unset": fields_to_remove,  # Supprimer les champs non essentiels
+                "$set": {
+                    "is_active": False  # Désactiver l'utilisateur
+                }
+            }
+        )
+        return result.modified_count > 0  # Retourne True si la mise à jour a été effectuée
