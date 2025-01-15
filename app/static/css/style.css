@@ -39,54 +39,55 @@ header {
   width: 100%;
 }
 
+.menu-burger, .profil-menu-burger {
+  display: none;
+  position: relative;
+  width: 30px;
+  height: 20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  
+  span {
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 2px; 
+    background-color: var(--PrimaryColor);
+    transition: transform 0.3s ease, top 0.3s ease, opacity 0.3s ease;
+  }
+
+  span:nth-of-type(1) {
+    top: 0;
+  }
+  span:nth-of-type(2) {
+    top: 9px; 
+  }
+  span:nth-of-type(3) {
+    top: 18px;
+  }
+
+  &.active {
+    span:nth-of-type(1) {
+      top: 9px;
+      transform: rotate(45deg); 
+    }
+    span:nth-of-type(2) {
+      opacity: 0;
+    }
+    span:nth-of-type(3) {
+      top: 9px;
+      transform: rotate(-45deg);
+    }
+  }
+}
+
 nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 40px;
-
-  .menu-burger {
-    display: none;
-    position: relative;
-    width: 30px;
-    height: 20px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    
-    span {
-      position: absolute;
-      display: block;
-      width: 100%;
-      height: 2px; 
-      background-color: var(--PrimaryColor);
-      transition: transform 0.3s ease, top 0.3s ease, opacity 0.3s ease;
-    }
-    span:nth-of-type(1) {
-      top: 0;
-    }
-    span:nth-of-type(2) {
-      top: 9px; 
-    }
-    span:nth-of-type(3) {
-      top: 18px;
-    }
-  
-    &.active {
-      span:nth-of-type(1) {
-        top: 9px;
-        transform: rotate(45deg); 
-      }
-      span:nth-of-type(2) {
-        opacity: 0;
-      }
-      span:nth-of-type(3) {
-        top: 9px;
-        transform: rotate(-45deg);
-      }
-    }
   }
-}
 
 nav > a {
   color: var(--PrimaryColor);
@@ -287,6 +288,9 @@ a {
     height: 80vh;
     padding: 20px 30px;
     border-right: 1px solid var(--PrimaryColor);
+    transition: all 0.5s ease;
+    background-color: var(--Background1);
+    z-index: 1;
     
     & .profil-info, & .dashboard-info {
       display: flex;
@@ -363,9 +367,25 @@ a {
       gap: 20px;
       align-items: center;
 
-      h1 {
-        color: var(--PrimaryColor);
+      & .title-profil {
+        position: relative;
+        width: 100%;
+
+        & .profil-menu-burger{
+          position: absolute;
+          display: none;
+          top: 50%;
+          right: 25px;
+          transform: translateY(-50%);
+          width: 30px;
+        }
+        
+        h1 {
+          text-align: center;
+          color: var(--PrimaryColor);
+        }
       }
+
 
       ul {
         display: flex;
@@ -373,10 +393,12 @@ a {
         gap: 30px;
         
         li {
+
           .active {
             color: var(--PrimaryColor);
             border-bottom: 1px solid var(--PrimaryColor);
           }
+
           
           a {
             padding: 10px;
@@ -384,7 +406,7 @@ a {
         }
       }
 
-      div {
+      & .btn-create-scrutin {
         margin: 30px 0px 30px 4px;
         width: 100%;
       }
@@ -457,7 +479,7 @@ a {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      padding: 20px;
+      padding: 20px 50px 20px 20px;
       cursor: pointer;
       width: 100%;
       position: relative;
@@ -484,7 +506,8 @@ a {
 
     & .scrutin-info {
       display: flex;
-      gap: 20px;
+      flex-wrap: wrap;
+      gap: 5px 20px;
 
       p:nth-of-type(3) {
         display: flex;
@@ -827,6 +850,30 @@ p.error {
 }
 
 @media (max-width: 1100px) {
+  .profil-container {
+    /* position: relative; */
+
+    aside {
+      position: absolute;
+      left: -100%;
+      height: -webkit-fill-available;
+      /* display: none; */
+    }
+
+    aside.active {
+      left: 0;
+      background: var(--Background1);
+    }
+
+    main .scrutin-profil-top .title-profil .profil-menu-burger {
+      display: flex;
+    }
+
+    main {
+      margin-left: 0;
+    }
+  }
+
   .home-container {
     #condorcet-method {
       flex-direction: column;
@@ -969,6 +1016,28 @@ p.error {
 }
 
 @media (max-width: 500px) {
+  .profil-container {
+
+    aside {
+      padding: 10px;
+    }
+
+    padding: 10px;
+
+    .title-accordeon p {
+      text-wrap: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+
+    .scrutin-bottom {
+      flex-direction: column;
+      align-items: start!important;
+      gap: 10px;
+    }
+  }
+
   .form-container div {
     display: flex;
     flex-direction: column;

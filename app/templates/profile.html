@@ -2,6 +2,10 @@
 
 {% block title %}Profil{% endblock %}
 
+{% block javascript %}
+<script src="{{ url_for('static', filename='js/profile.js') }}" defer></script>
+{% endblock %}
+
 {% block content %}
 <div class="profil-container">
   <aside>
@@ -20,12 +24,19 @@
   </aside>
   <main>
     <div class="scrutin-profil-top">
-      <h1>Scrutins</h1>
+      <div class="title-profil">
+        <h1>Scrutins</h1>
+        <button class="profil-menu-burger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
       <ul>
         <li><a href="{{ url_for('user.get_user_profile', action='scrutins') }}" {% if action == 'scrutins'%} class="active"{% endif %}>Vos scrutins</a></li>
         <li><a href="{{ url_for('user.get_user_profile', action='participate') }}" {% if action == 'participate'%} class="active"{% endif %}>Participations</a></li>
       </ul>
-      <div>
+      <div  class="btn-create-scrutin">
         <a href="{{ url_for('scrutin.create_scrutin') }}" class="btn-border-anim">Créer un scrutin</a>
       </div>
     </div>
@@ -37,7 +48,7 @@
         <label for="scrutin-{{ loop.index }}" class="title-accordeon">
           <p>{{ scrutin.title }}</p>
           <div class="scrutin-info">
-            <p>Créer le <span> {{ scrutin.created_at.strftime("%d/%m/%Y %H:%M:%S") }} </span> - Fin le <span> {{ scrutin.start_date.strftime("%d/%m/%Y %H:%M:%S") }} </span></p>
+            <p>Créer le <span> {{ scrutin.created_at.strftime("%d/%m/%Y") }} </span> - Fin le <span> {{ scrutin.start_date.strftime("%d/%m/%Y") }} </span></p>
             <p>Par <span> @{{ scrutin.creator_pseudonym }}</span></p>
             <p><span><img class="icon" src="{{ url_for('static', filename='assets/svg/user.svg') }}" alt=""></span><span>24 </span> participants</p>
           </div>

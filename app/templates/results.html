@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}Résultat du scrutin{% endblock %}
+<!-- http://127.0.0.1:5000/scrutins/result/6782fa6a787efb10903417f9 -->
 
 {% block content %}
     <div class="vote-container">
@@ -25,11 +26,10 @@
             {% else %}
                 <p>Le résultat du scrutin n'a pas encore été calculé.</p>
                 {{ session_user_id }}
-                    {% if result._id|string == session_user_id %}
-                        <form action="{{ url_for('scrutin.result', scrutin_id=scrutin_id|string) }}" method="post">
-                            <button class="btn-border-anim">Calculer le résultat</button>
-                        </form>
-                    {% endif %}
+                {% if result._id|string == session_user_id %}
+                    <form action="{{ url_for('scrutin.result', scrutin_id=scrutin_id|string) }}" method="post">
+                        <button class="btn-border-anim">Calculer le résultat</button>
+                    </form>
                 {% endif %}
             {% endif %}
         </div>
