@@ -6,6 +6,10 @@ from bson.objectid import ObjectId
 from datetime import datetime
 
 scrutin_routes = Blueprint('scrutin', __name__)
+@scrutin_routes.context_processor
+def inject_now():
+    return {'now': datetime.now}
+
 @scrutin_routes.route('/scrutins/', methods=["GET"])
 def index_scrutin():
     

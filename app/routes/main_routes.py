@@ -4,7 +4,9 @@ from datetime import datetime
 
 # Création du blueprint
 main_routes = Blueprint('main', __name__)
-
+@main_routes.context_processor
+def inject_now():
+    return {'now': datetime.now}
 @main_routes.route('/')
 def home():
     # session['user_email'] = "test@email.com"  # Optionnel, stocke aussi l'email
