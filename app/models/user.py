@@ -27,6 +27,11 @@ class UserModel:
     def find_by_email(email):
         """Trouve un utilisateur par son email."""
         return current_app.db.users.find_one({"email": email})
+    
+    @staticmethod
+    def find_by_pseudonym(pseudonym):
+        """Trouve un utilisateur pas son pseudonym"""
+        return current_app.db.users.find_one({"pseudonym": pseudonym})
 
 # CONNEXION
     @staticmethod

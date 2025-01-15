@@ -99,6 +99,14 @@ def register():
             error_message = "Les mots de passe ne correspondent pas."
             return render_template("register.html", error=error_message)
         
+        # Vérification du format de l'email
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            error_message = "Adresse e-mail invalide."
+            return render_template("register.html", error=error_message)
+
+        if UserModel.find_by_email(email):
+            error_message = "L'email est déjà utilisé."
+            return render_template("register.html", error=error_message)
         # création de l'utilisateur
         try:
             user_data = {
@@ -141,6 +149,7 @@ def edit_user():
         """Valide l'adresse e-mail."""
         email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
         return re.match(email_regex, email) is not None
+    
     """Modifier le profil de l'utilisateur."""
     if 'user_id' not in session:
         return redirect(url_for('user.login'))
