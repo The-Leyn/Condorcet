@@ -12,7 +12,7 @@
     <div class="profil-info">
       <h2>{{ user.firstname }} {{ user.lastname }}</h2>
       <span>@{{user.pseudonym}}</span>
-      <p><span><img class="icon" src="{{ url_for('static', filename='assets/svg/mail.svg') }}" alt=""></span>{{ user.email }}</p>
+      <p><span><img class="icon" src="{{ url_for('static', filename='assets/svg/mail.svg') }}" alt="icon mail"></span>{{ user.email }}</p>
     </div>
     <div class="profil-actions">
       <a href="{{ url_for('user.edit_user') }}"><span><img class="icon" src="{{ url_for('static', filename='assets/svg/edit.svg') }}" alt="edit"></span>Modifier vos informations</a>
@@ -50,9 +50,9 @@
           <div class="scrutin-info">
             <p>Créer le <span> {{ scrutin.created_at.strftime("%d/%m/%Y") }} </span> - Fin le <span> {{ scrutin.start_date.strftime("%d/%m/%Y") }} </span></p>
             <p>Par <span> @{{ scrutin.creator_pseudonym }}</span></p>
-            <p><span><img class="icon" src="{{ url_for('static', filename='assets/svg/user.svg') }}" alt=""></span><span>{{ scrutin.votes|length }} </span> participants</p>
+            <p><span><img class="icon" src="{{ url_for('static', filename='assets/svg/user.svg') }}" alt="icon participants"></span><span>{{ scrutin.votes|length }} </span> participants</p>
           </div>
-          <button class="down-arrow"><img src="{{ url_for('static', filename='assets/svg/down-arrow.svg') }}" alt=""></button>
+          <button class="down-arrow"><img src="{{ url_for('static', filename='assets/svg/down-arrow.svg') }}" alt="afficher plus d'informations"></button>
         </label>
         <div class="content-accordeon">
           <div class="scrutin-description"><p>Je vous propose de renseigner votre style de musique préféré parmis plusieurs choix.</p></div>
@@ -65,8 +65,6 @@
                 {% endfor %}
               </ul>
             </div>
-
-            <!-- <a href="" class="btn-border-anim">Modifier</a> -->
             {% if scrutin.start_date > current_time %}
             <a class="btn-border-anim" href="{{ url_for('scrutin.edit_scrutin', scrutin_id=scrutin.scrutin_id|string) }}">Modifier</a></li>
             {% elif scrutin.end_date < current_time %}

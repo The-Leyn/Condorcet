@@ -8,7 +8,7 @@
         <div>
             <img src="{{ url_for('static', filename='assets/svg/logo-xl.svg') }}" alt="logo condorcet">
             <h1>Un système de vote à la hauteur de vos idées</h1>
-            <a href="" class="btn-border-anim">Commencer</a>
+            <a href="{{ url_for('scrutin.create_scrutin') }}" class="btn-border-anim">Commencer</a>
         </div>
         <a href="#condorcet-method"><img src="{{ url_for('static', filename='assets/svg/arrow-more.svg') }}" alt="suite de la page"></a>
     </section>
