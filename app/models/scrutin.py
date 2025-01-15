@@ -266,7 +266,7 @@ class ScrutinModel:
         # Essayer d'obtenir le premier résultat du curseur
         scrutin = next(scrutin_cursor, None)
     
-         # Si aucun résultat n'est trouvé
+        # Si aucun résultat n'est trouvé
         if scrutin is None:
             return None
         return scrutin

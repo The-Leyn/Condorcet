@@ -207,7 +207,6 @@ def add_vote(scrutin_id):
         )
 
 
-
 @scrutin_routes.route('/scrutins/result/<string:scrutin_id>', methods=["GET", "POST"])
 def result(scrutin_id):
     if 'user_id' not in session:

@@ -52,7 +52,7 @@
             <p>Par <span> @{{ scrutin.creator_pseudonym }}</span></p>
             <p><span><img class="icon" src="{{ url_for('static', filename='assets/svg/user.svg') }}" alt=""></span><span>{{ scrutin.votes|length }} </span> participants</p>
           </div>
-          <button><img src="{{ url_for('static', filename='assets/svg/down-arrow.svg') }}" alt=""></button>
+          <button class="down-arrow"><img src="{{ url_for('static', filename='assets/svg/down-arrow.svg') }}" alt=""></button>
         </label>
         <div class="content-accordeon">
           <div class="scrutin-description"><p>Je vous propose de renseigner votre style de musique préféré parmis plusieurs choix.</p></div>
