@@ -7,7 +7,7 @@
     <div class="vote-container">
         <div>
             <h1>{{ result.title }}</h1>
-            <p>Je propose ici de choisir entre plusieurs animaux de compagnies. Je pourrais ainsi me faire une idée de votre personnalité et de votre style de vie.</p>
+            <p>{{ result.description }}</p>
             <p>Créer par <span>@{{ result.creator_pseudonym }}</span></p>
 
             {% if result.ranking %}
@@ -25,7 +25,6 @@
                 </div>
             {% else %}
                 <p>Le résultat du scrutin n'a pas encore été calculé.</p>
-                {{ session_user_id }}
                 {% if result._id|string == session_user_id %}
                     <form action="{{ url_for('scrutin.result', scrutin_id=scrutin_id|string) }}" method="post">
                         <button class="btn-border-anim">Calculer le résultat</button>

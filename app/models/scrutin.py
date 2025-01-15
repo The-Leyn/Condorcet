@@ -511,6 +511,7 @@ class ScrutinModel:
         scrutins = list(
             current_app.db.users.aggregate([
                 {"$unwind": "$scrutin"},  # Décompose chaque scrutin
+                {"$match": {"scrutin.is_active": True}},
                 {"$unwind": "$scrutin.votes"},  # Décompose chaque vote
                 {"$group": {  # Grouper par scrutin_id
                     "_id": "$scrutin.scrutin_id",
@@ -519,6 +520,7 @@ class ScrutinModel:
                     "created_at": {"$first": "$scrutin.created_at"},
                     "start_date": {"$first": "$scrutin.start_date"},
                     "end_date": {"$first": "$scrutin.end_date"},
+                    "creator_pseudonym": {"$first": "$pseudonym"}, 
                     "participants_count": {"$sum": 1}  # Compter les participants
                 }},
                 {"$sort": {"participants_count": -1}},  # Trier par nombre de participants décroissant

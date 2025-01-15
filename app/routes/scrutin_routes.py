@@ -177,6 +177,7 @@ def add_vote(scrutin_id):
         vote_info = ScrutinModel.find_user_vote(user_id, scrutin_id)
         if vote_info:
             ScrutinModel.updateVote(preferences, user_id, scrutin_id)
+            
             return redirect(url_for('scrutin.add_vote', scrutin_id=scrutin_id)) 
         else:
             ScrutinModel.addVote(preferences, user_id, scrutin_id)

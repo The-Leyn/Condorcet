@@ -14,7 +14,7 @@
     {% if scrutin is none %}
     <p class="error">Le scrutin que vous essayez de modifier n'existe pas ou vous n'avez pas les droits nécessaires.</p>
     {% else %}
-    <form action="{{ url_for('scrutin.create_scrutin') }}" method="POST">
+    <form action="{{ url_for('scrutin.edit_scrutin', scrutin_id=scrutin.scrutin_id|string) }}" method="POST">
         <input type="text" id="title" name="title" placeholder="QUEL EST VOTRE QUESTION*" required="required" value="{{scrutin.title}}">
 
         <div class="align-input">

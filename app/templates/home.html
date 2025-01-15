@@ -37,7 +37,7 @@
             <h2>Les 10 derniers scrutins actifs</h2>
             <ul>
                 {% for scrutin in scrutinsActive %}
-                <li><a href="{{ url_for('scrutin.add_vote', scrutin_id=scrutin.scrutin_id) }}"><span>{{ scrutin.created_at.strftime("%d/%m/%Y") }}</span>{{ scrutin.title }}</a></li>
+                <li><a href="{{ url_for('scrutin.add_vote', scrutin_id=scrutin._id) }}"><span>{{ scrutin.created_at.strftime("%d/%m/%Y") }}</span>{{ scrutin.title }}</a></li>
                 {% endfor %}
             </ul>
         </div>
