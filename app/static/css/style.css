@@ -887,6 +887,24 @@ p.error {
     }
   }
 
+  .dashboard-container {
+    flex-direction: column;
+
+    aside {
+      position: relative;
+      height: auto;
+      border: none;
+      padding: 0px;
+    }
+    main {
+      margin-left: 0;
+
+      .articles .scrutin .title-accordeon {
+        padding: 10px;
+      }
+    }
+  }
+
   .home-container {
     #condorcet-method {
       flex-direction: column;

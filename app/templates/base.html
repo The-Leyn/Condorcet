@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Mon Site{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/svg/logo.svg') }}">
   <script src="{{ url_for('static', filename='js/navBar.js') }}" defer></script>
   {% block javascript %}{% endblock %}
 </head>
