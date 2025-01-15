@@ -226,7 +226,7 @@ def result(scrutin_id):
     if request.method == "POST":
 
         isScrutin = ScrutinModel.find_by_user_and_id(user_id, scrutin_id)
-         # Si c'est le user est le créateur du scrutin alors calculé   
+        # Si c'est le user est le créateur du scrutin alors calculé   
         if isScrutin:
             ScrutinModel.calculate_condorcet_and_save(scrutin_id, user_id)
 
