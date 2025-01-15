@@ -13,7 +13,7 @@ def index_scrutin():
     return render_template("scrutins.html", scrutins=scrutins, session=session)
 
 @scrutin_routes.route('/dashboard', methods=["GET"])
-def index_scrutin():
+def dashboard():
     """ Récupérer tous les scrutins, calculer la moyenne des options par scrutin, et afficher les données dans le template. """
     
     # Récupérer tous les scrutins

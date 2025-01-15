@@ -1,8 +1,6 @@
 from flask import current_app
 from datetime import datetime
 from bson.objectid import ObjectId
-from datetime import datetime
-from bson import SON
 
 class ScrutinModel:
     @staticmethod
