@@ -12,4 +12,7 @@
         <button class="btn-border-anim" type="submit">Modifier</button>
     </form>
 </div>
+{% if error %}
+    <div class="error">{{ error }}</div>
+{% endif %}
 {% endblock %}
