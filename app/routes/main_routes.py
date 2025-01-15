@@ -8,9 +8,7 @@ main_routes = Blueprint('main', __name__)
 def inject_now():
     return {'now': datetime.now}
 @main_routes.route('/')
-def home():
-    # session['user_email'] = "test@email.com"  # Optionnel, stocke aussi l'email
-    
+def home():   
     scrutins = ScrutinModel.find_10_last()
     scrutinsActive = ScrutinModel.find_10_last_active()
     if scrutins and scrutinsActive:
