@@ -6,12 +6,16 @@ from bson.objectid import ObjectId
 from datetime import datetime
 
 scrutin_routes = Blueprint('scrutin', __name__)
-@scrutin_routes.route('/scrutins', methods=["GET"])
+@scrutin_routes.route('/dashboard', methods=["GET"])
 def index_scrutin():
     """ Récupérer tous les scrutins, calculer la moyenne des options par scrutin, et afficher les données dans le template. """
+    
     # Récupérer tous les scrutins
     scrutins = ScrutinModel.find_all_scrutin()
-
+    
+    # # Récupérer les 10 scrutins les plus populaires
+    # top_scrutins = ScrutinModel.find_top_10()
+    
     # Calculer le nombre total d'options et le nombre de scrutins
     total_options = sum(len(scrutin['options']) for scrutin in scrutins)
     total_scrutins = len(scrutins)
@@ -22,43 +26,23 @@ def index_scrutin():
     else:
         average_options = 0.0
 
+    """Récupérer les informations d'un utilisateur."""
+    users = UserModel.find_all_user()
+    user_count = UserModel.count_users()  # Nombre total d'utilisateurs
+    active_user_count = UserModel.count_active_users()  # Nombre d'utilisateurs actifs
+
     # Passer les scrutins et la moyenne des options au template
-    return render_template("scrutins.html", scrutins=scrutins, average_options=average_options)
+    return render_template("dashboard.html", scrutins=scrutins, average_options=average_options, users=users, user_count=user_count, active_user_count=active_user_count)
 
-@scrutin_routes.route('/scrutins', methods=['GET'])
-def afficher_scrutins_10_populaire():
-    """
-    Afficher tous les scrutins et les 10 scrutins les plus participés.
-    """
-    try:
-        # Récupérer tous les scrutins
-        scrutins = list(current_app.db.scrutins.find())
 
-        # Récupérer les 10 scrutins avec le plus de participants
-        top_scrutins = list(current_app.db.scrutins.aggregate([
-            {"$addFields": {"vote_count": {"$size": {"$ifNull": ["$votes", []]}}}},  # Calculer le nombre de votes
-            {"$sort": {"vote_count": -1}},  # Trier par le nombre de votes décroissant
-            {"$limit": 10}  # Limiter à 10 résultats
-        ]))
-
-        # Calculer la moyenne des options pour tous les scrutins
-        total_options = sum(len(scrutin.get("options", [])) for scrutin in scrutins)
-        average_options = round(total_options / len(scrutins), 2) if scrutins else 0
-
-        # Calculer la moyenne des votes pour les top scrutins
-        total_votes = sum(scrutin.get("vote_count", 0) for scrutin in top_scrutins)
-        average_votes = round(total_votes / len(top_scrutins), 2) if top_scrutins else 0
-
-        return render_template(
-            'scrutin.html',
-            scrutins=scrutins,
-            average_options=average_options,
-            top_scrutins=top_scrutins,
-            average_votes=average_votes
-        )
-    except Exception as e:
-        return {"error": f"Une erreur est survenue : {str(e)}"}, 500
-
+@scrutin_routes.route('/scrutins', methods=["GET"])
+def all_scrutin():
+    """ Récupérer tous les scrutins, calculer la moyenne des options par scrutin, et afficher les données dans le template. """
+    # Récupérer tous les scrutins
+    scrutins = ScrutinModel.find_all_scrutin()
+    # Passer les scrutins et la moyenne des options au template
+    return render_template("scrutins.html", scrutins=scrutins)
+    
 @scrutin_routes.route('/scrutins/add', methods=["GET", "POST"])
 def create_scrutin():
     """Créer un scrutin"""

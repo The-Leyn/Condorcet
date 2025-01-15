@@ -64,5 +64,6 @@ class UserModel:
 
     @staticmethod
     def count_active_users():
-        """Compter le nombre d'utilisateurs actifs."""
+        """Compter le nombre total d'utilisateurs actifs."""
         return current_app.db.users.count_documents({"is_active": True})
+    

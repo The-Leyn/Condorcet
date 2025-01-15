@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Dashboard Admin </h1>
+    <p>Nombre total de scrutins : {{ scrutins | length }}</p>
+    <p>Moyenne des options par scrutin : {{ average_options }}</p>
+    <p>Nombre total d'utilisateurs inscrits : {{ user_count }}</p>
+    <p>Nombre total d'utilisateurs actifs : {{ active_user_count }}</p>
+
+    <h2>Top 10 des scrutins avec le plus de participants</h2>
+    <table border="1">
+        <tr>
+            <th>Titre</th>
+            <th>Description</th>
+            <th>Date de début</th>
+            <th>Date de fin</th>
+            <th>Participants</th>
+        </tr>
+        {% for scrutin in top_scrutins %}
+        <tr>
+            <td>{{ scrutin.title }}</td>
+            <td>{{ scrutin.description }}</td>
+            <td>{{ scrutin.start_date }}</td>
+            <td>{{ scrutin.end_date }}</td>
+            <td>{{ scrutin.participants_count }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>

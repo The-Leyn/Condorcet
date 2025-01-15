@@ -63,31 +63,3 @@ def logout():
     else:
         UserModel.logout()
         return redirect(url_for('main.home'))
-    
-@user_routes.route('/admin', methods=['GET'])
-def get_users_admin():
-    """Récupérer les informations d'un utilisateur."""
-    users = UserModel.find_all_user()
-    user_count = UserModel.count_users()  # Appel à la méthode ajoutée
-    if users:
-        return render_template("admin.html", users=users, user_count=user_count)
-    return jsonify({"error": "User not found"}), 404
-
-@user_routes.route('/admin', methods=['GET'])
-def get_active_users_admin():
-    """Afficher les utilisateurs, leur nombre total et le nombre d'utilisateurs actifs."""
-    users = UserModel.find_all_user()  # Récupérer tous les utilisateurs
-    user_count = UserModel.count_users()  # Total des utilisateurs
-    active_user_count = UserModel.count_active_users()  # Compter les utilisateurs actifs
-
-    if users:
-        return render_template(
-            "admin.html", 
-            users=users, 
-            user_count=user_count, 
-            active_user_count=active_user_count
-        )
-    return jsonify({"error": "User not found"}), 404
-
-
-

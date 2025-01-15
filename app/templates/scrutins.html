@@ -36,9 +36,6 @@
     </style>
 </head>
 <body>
-    <h1>Liste des scrutins</h1>
-
-    <h2>Moyenne des options pour tous les scrutins : {{ average_options }}</h2>
 
     {% if scrutins %}
         <ul>
@@ -56,23 +53,6 @@
         </ul>
     {% else %}
         <p>Aucun scrutin trouvé.</p>
-    {% endif %}
-
-    <h2>Top 10 des scrutins avec le plus de participants</h2>
-    {% if top_scrutins %}
-        <ul>
-            {% for scrutin in top_scrutins %}
-                <li>
-                    <h2>{{ scrutin.title }}</h2>
-                    <p><strong>Description:</strong> {{ scrutin.description }}</p>
-                    <p><strong>Date de début:</strong> {{ scrutin.start_date }}</p>
-                    <p><strong>Date de fin:</strong> {{ scrutin.end_date }}</p>
-                    <p><strong>Votes:</strong> {{ scrutin.vote_count }}</p>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Aucun scrutin trouvé dans les top participants.</p>
     {% endif %}
 </body>
 </html>

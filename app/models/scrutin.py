@@ -1,7 +1,8 @@
 from flask import current_app
 from datetime import datetime
 from bson.objectid import ObjectId
-class ScrutinModel:from datetime import datetime
+from datetime import datetime
+from bson import SON
 
 class ScrutinModel:
     def find_all_scrutin():
@@ -260,37 +261,41 @@ def average_options_per_scrutin():
     Calculer le nombre moyen d'options par scrutin.
     """
     result = current_app.db.users.aggregate([
-        {"$unwind": "$scrutin"},  # Séparer chaque scrutin
-        {"$group": {  # Grouper tous les scrutins
+        {"$unwind": "$scrutin"},
+        {"$group": {
             "_id": None,
-            "total_options": {"$sum": {"$size": "$scrutin.options"}},  # Compter le nombre d'options
+            "total_options": {"$sum": {"$size": "$scrutin.options"}},
+            "total_scrutins": {"$sum": 1}
         }},
-        {"$count": "total_scrutins"},  # Utiliser $count pour compter le nombre de scrutins
-        {"$project": {  # Calculer la moyenne
+        {"$project": {
             "_id": 0,
-            "average_options": {"$divide": ["$total_options", "$total_scrutins"]}  # Moyenne = total_options / total_scrutins
+            "average_options": {"$divide": ["$total_options", "$total_scrutins"]}
         }}
     ])
 
-    # Obtenir le résultat de l'agrégation
     avg = next(result, None)
+    print(f"Result of aggregation: {avg}")  # Vérifier ce qui est renvoyé
     return avg.get("average_options", 0) if avg else 0
 
-@staticmethod
-def find_top_10_participated_scrutins():
-    """ Récupérer les 10 scrutins ayant le plus de participants."""
-    try:
-        # Supposons que "votes" contient une liste des votes pour chaque scrutin.
-        scrutins = list(current_app.db.scrutins.aggregate([
-            {"$addFields": {"vote_count": {"$size": {"$ifNull": ["$votes", []]}}}},  # Calculer le nombre de votes
-            {"$sort": {"vote_count": -1}},  # Trier par nombre de votes décroissant
-            {"$limit": 10}  # Limiter à 10 résultats
-        ]))
-        
-        # Calculer la moyenne des votes pour ces scrutins
-        total_votes = sum(scrutin.get("vote_count", 0) for scrutin in scrutins)
-        average_votes = round(total_votes / len(scrutins), 2) if scrutins else 0
 
-        return scrutins, average_votes
-    except Exception as e:
-        raise Exception(f"Erreur lors de la récupération des scrutins : {str(e)}")
+@staticmethod
+def find_top_10_scrutins_by_participants():
+        """ Récupérer les 10 scrutins avec le plus de participants."""
+        scrutins = list(
+            current_app.db.users.aggregate([
+            {"$unwind": "$scrutin"},  # Décompose chaque scrutin
+            {"$unwind": "$scrutin.votes"},  # Décompose chaque vote
+            {"$group": {  # Grouper par scrutin_id
+                "_id": "$scrutin.scrutin_id",
+                "title": {"$first": "$scrutin.title"},
+                "description": {"$first": "$scrutin.description"},
+                "created_at": {"$first": "$scrutin.created_at"},
+                "start_date": {"$first": "$scrutin.start_date"},
+                "end_date": {"$first": "$scrutin.end_date"},
+                "participants_count": {"$sum": 1}  # Compter les participants
+            }},
+            {"$sort": {"participants_count": -1}},  # Trier par nombre de participants décroissant
+            {"$limit": 10}  # Limiter à 10 résultats
+        ])
+    )   
+        return scrutins
