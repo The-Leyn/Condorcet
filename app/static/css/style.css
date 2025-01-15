@@ -453,6 +453,19 @@ a {
   }
 }
 
+
+
+.form-deactivate button {
+  background: transparent;
+  border: 1px solid var(--DangerColor);
+  color: var(--DangerColor);
+  font-size: 1.2rem;
+  padding: 10px 20px;
+  right: 30px;
+  cursor: pointer;
+  z-index: 2;
+}
+
 .articles {
   overflow: hidden;
   display: flex;
@@ -485,7 +498,7 @@ a {
       position: relative;
     }
 
-    button {
+    button.down-arrow {
       position: absolute;
       right: 20px;
       top: 50%;
