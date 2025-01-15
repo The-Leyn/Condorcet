@@ -482,47 +482,47 @@ class ScrutinModel:
             return {"message": "Scrutin introuvable.", "success": False}
 
 
-@staticmethod
-def average_options_per_scrutin():
-    """
-    Calculer le nombre moyen d'options par scrutin.
-    """
-    result = current_app.db.users.aggregate([
-        {"$unwind": "$scrutin"},
-        {"$group": {
-            "_id": None,
-            "total_options": {"$sum": {"$size": "$scrutin.options"}},
-            "total_scrutins": {"$sum": 1}
-        }},
-        {"$project": {
-            "_id": 0,
-            "average_options": {"$divide": ["$total_options", "$total_scrutins"]}
-        }}
-    ])
+    @staticmethod
+    def average_options_per_scrutin():
+        """
+        Calculer le nombre moyen d'options par scrutin.
+        """
+        result = current_app.db.users.aggregate([
+            {"$unwind": "$scrutin"},
+            {"$group": {
+                "_id": None,
+                "total_options": {"$sum": {"$size": "$scrutin.options"}},
+                "total_scrutins": {"$sum": 1}
+            }},
+            {"$project": {
+                "_id": 0,
+                "average_options": {"$divide": ["$total_options", "$total_scrutins"]}
+            }}
+        ])
 
-    avg = next(result, None)
-    print(f"Result of aggregation: {avg}")  # Vérifier ce qui est renvoyé
-    return avg.get("average_options", 0) if avg else 0
+        avg = next(result, None)
+        print(f"Result of aggregation: {avg}")  # Vérifier ce qui est renvoyé
+        return avg.get("average_options", 0) if avg else 0
 
 
-@staticmethod
-def find_top_10_scrutins_by_participants():
+    @staticmethod
+    def find_top_10_scrutins_by_participants():
         """ Récupérer les 10 scrutins avec le plus de participants."""
         scrutins = list(
             current_app.db.users.aggregate([
-            {"$unwind": "$scrutin"},  # Décompose chaque scrutin
-            {"$unwind": "$scrutin.votes"},  # Décompose chaque vote
-            {"$group": {  # Grouper par scrutin_id
-                "_id": "$scrutin.scrutin_id",
-                "title": {"$first": "$scrutin.title"},
-                "description": {"$first": "$scrutin.description"},
-                "created_at": {"$first": "$scrutin.created_at"},
-                "start_date": {"$first": "$scrutin.start_date"},
-                "end_date": {"$first": "$scrutin.end_date"},
-                "participants_count": {"$sum": 1}  # Compter les participants
-            }},
-            {"$sort": {"participants_count": -1}},  # Trier par nombre de participants décroissant
-            {"$limit": 10}  # Limiter à 10 résultats
-        ])
-    )   
+                {"$unwind": "$scrutin"},  # Décompose chaque scrutin
+                {"$unwind": "$scrutin.votes"},  # Décompose chaque vote
+                {"$group": {  # Grouper par scrutin_id
+                    "_id": "$scrutin.scrutin_id",
+                    "title": {"$first": "$scrutin.title"},
+                    "description": {"$first": "$scrutin.description"},
+                    "created_at": {"$first": "$scrutin.created_at"},
+                    "start_date": {"$first": "$scrutin.start_date"},
+                    "end_date": {"$first": "$scrutin.end_date"},
+                    "participants_count": {"$sum": 1}  # Compter les participants
+                }},
+                {"$sort": {"participants_count": -1}},  # Trier par nombre de participants décroissant
+                {"$limit": 10}  # Limiter à 10 résultats
+                ])
+            )   
         return scrutins
