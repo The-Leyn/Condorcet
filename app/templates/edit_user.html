@@ -1,29 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit Profile</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        <ul>
-        {% for category, message in messages %}
-            <li class="{{ category }}">{{ message }}</li>
-        {% endfor %}
-        </ul>
-    {% endif %}
-{% endwith %}
+{% block title %}Inscription{% endblock %}
 
-<form action="/edit-profile" method="post">
-    <input type="text" name="firstname" value="{{ user.firstname }}" placeholder="First Name">
-    <input type="text" name="lastname" value="{{ user.lastname }}" placeholder="Last Name">
-    <input type="email" name="email" value="{{ user.email }}" placeholder="Email">
-    <button type="submit">Update Profile</button>
-</form>
-{% if error %}
-<div class="error">{{ error }}</div>
-{% endif %}
-</body>
-</html>
+{% block content %}
+<div class="form-container">
+    <h2>Inscrivez-vous</h2>
+    <form action="/edit-profile" method="post">
+        <input type="text" name="firstname" value="{{ user.firstname }}" placeholder="First Name">
+        <input type="text" name="lastname" value="{{ user.lastname }}" placeholder="Last Name">
+        <input type="email" name="email" value="{{ user.email }}" placeholder="Email">
+        <button class="btn-border-anim" type="submit">Modifier</button>
+    </form>
+</div>
+{% endblock %}
