@@ -15,16 +15,7 @@ def index_scrutin():
     
     scrutins = ScrutinModel.find_all_scrutin()
     return render_template("scrutins.html", scrutins=scrutins, session=session)
-
-
-# @scrutin_routes.route('/scrutins', methods=["GET"])
-# def all_scrutin():
-#     """ Récupérer tous les scrutins, calculer la moyenne des options par scrutin, et afficher les données dans le template. """
-#     # Récupérer tous les scrutins
-#     scrutins = ScrutinModel.find_all_scrutin()
-#     # Passer les scrutins et la moyenne des options au template
-#     return render_template("scrutins.html", scrutins=scrutins)
-    
+ 
 @scrutin_routes.route('/scrutins/add', methods=["GET", "POST"])
 def create_scrutin():
     """Créer un scrutin"""
@@ -132,9 +123,8 @@ def edit_scrutin(scrutin_id):
     scrutin_id = ObjectId(scrutin_id)
     scrutin = ScrutinModel.find_by_user_and_id(user_id,scrutin_id)
     if not scrutin:
-        # Si aucun scrutin trouvé, rediriger ou afficher un message d'erreur
-        # flash("Ce scrutin n'existe pas ou vous n'avez pas les droits pour le modifier.", "error")
-        return redirect(url_for('scrutin.index_scrutin'))  # Rediriger vers la page d'index des scrutins
+        # Si aucun scrutin trouvé, rediriger 
+        return redirect(url_for('scrutin.index_scrutin'))  
     
     return render_template("scrutin_form/edit_scrutin_form.html", scrutin_id=scrutin_id, scrutin=scrutin)
 
@@ -186,16 +176,11 @@ def add_vote(scrutin_id):
         else:
             ScrutinModel.addVote(preferences, user_id, scrutin_id)
             return redirect(url_for('scrutin.add_vote', scrutin_id=scrutin_id))
-
-    # # Verifier si le scrutin est en cours
-    # if scrutin['start_date'] < current_time and scrutin['end_date'] > current_time:
-    #     return render_template("scrutin_form/vote_scrutin_form.html", scrutin_id=scrutin_id)
-    
+        
     # Verifier si le scrutin est terminé
     if scrutin['end_date'] < current_time:
         return render_template("results.html", scrutin_id=scrutin_id)
     
-    # Verifier si l'utilisateur à déjà voté
     # Vérifier si l'utilisateur a déjà voté
     vote_info = ScrutinModel.find_user_vote(user_id, scrutin_id)
     if vote_info:
