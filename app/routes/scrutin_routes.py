@@ -5,8 +5,6 @@ from app.models.scrutin import ScrutinModel
 from bson.objectid import ObjectId
 from datetime import datetime
 
-
-# Définir le blueprint
 scrutin_routes = Blueprint('scrutin', __name__)
 @scrutin_routes.route('/scrutins/', methods=["GET"])
 def index_scrutin():
@@ -14,6 +12,43 @@ def index_scrutin():
     scrutins = ScrutinModel.find_all_scrutin()
     return render_template("scrutins.html", scrutins=scrutins, session=session)
 
+@scrutin_routes.route('/dashboard', methods=["GET"])
+def index_scrutin():
+    """ Récupérer tous les scrutins, calculer la moyenne des options par scrutin, et afficher les données dans le template. """
+    
+    # Récupérer tous les scrutins
+    scrutins = ScrutinModel.find_all_scrutin()
+    
+    # # Récupérer les 10 scrutins les plus populaires
+    # top_scrutins = ScrutinModel.find_top_10()
+    
+    # Calculer le nombre total d'options et le nombre de scrutins
+    total_options = sum(len(scrutin['options']) for scrutin in scrutins)
+    total_scrutins = len(scrutins)
+
+    # Calculer la moyenne des options pour tous les scrutins (arrondie à 2 chiffres)
+    if total_scrutins > 0:
+        average_options = round(total_options / total_scrutins, 2)
+    else:
+        average_options = 0.0
+
+    """Récupérer les informations d'un utilisateur."""
+    users = UserModel.find_all_user()
+    user_count = UserModel.count_users()  # Nombre total d'utilisateurs
+    active_user_count = UserModel.count_active_users()  # Nombre d'utilisateurs actifs
+
+    # Passer les scrutins et la moyenne des options au template
+    return render_template("dashboard.html", scrutins=scrutins, average_options=average_options, users=users, user_count=user_count, active_user_count=active_user_count)
+
+
+@scrutin_routes.route('/scrutins', methods=["GET"])
+def all_scrutin():
+    """ Récupérer tous les scrutins, calculer la moyenne des options par scrutin, et afficher les données dans le template. """
+    # Récupérer tous les scrutins
+    scrutins = ScrutinModel.find_all_scrutin()
+    # Passer les scrutins et la moyenne des options au template
+    return render_template("scrutins.html", scrutins=scrutins)
+    
 @scrutin_routes.route('/scrutins/add', methods=["GET", "POST"])
 def create_scrutin():
     """Créer un scrutin"""
@@ -64,7 +99,6 @@ def create_scrutin():
             return render_template("scrutin_form/add_scrutin_form.html", error=f"Une erreur est survenue lors de la création du scrutin : {str(e)}")
         
     return render_template("scrutin_form/add_scrutin_form.html")
-
 
 @scrutin_routes.route('/scrutins/edit/<string:scrutin_id>', methods=["GET", "POST"])
 def edit_scrutin(scrutin_id):
@@ -127,7 +161,6 @@ def edit_scrutin(scrutin_id):
         return redirect(url_for('scrutin.index_scrutin'))  # Rediriger vers la page d'index des scrutins
     
     return render_template("scrutin_form/edit_scrutin_form.html", scrutin_id=scrutin_id, scrutin=scrutin)
-
 
 
 @scrutin_routes.route('/scrutins/<string:scrutin_id>', methods=["GET", "POST"])
