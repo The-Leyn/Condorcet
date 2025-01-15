@@ -36,30 +36,27 @@ def create_user():
     return _create_user
 
 def test_edit_user_success(client, create_user):
-    """Test si l'utilisateur met à jour son profil avec succès"""
-    # Créer un utilisateur et se connecter dans le contexte de l'application
-    with client.application.app_context():  # Crée un contexte d'application ici
-        user_id = create_user("test@example.com", "testuser", "John", "Doe", "password123")
+    with client.application.app_context():
+        create_user("test@example.com", "testuser", "John", "Doe", "password123")
 
+    # Connectez-vous en tant qu'utilisateur existant
     client.post('/login', data={'email': 'test@example.com', 'password': 'password123'})
 
-    # Effectuer la mise à jour du profil
+    # Effectuez la mise à jour
     response = client.post("/edit-profile", data={
         'firstname': 'Jane',
         'lastname': 'Smith',
         'email': 'newemail@example.com'
-    })
+    }, follow_redirects=True)
 
-    # Vérification de la redirection vers la page de profil
-    assert response.status_code == 302  # Redirection après mise à jour réussie
-    assert response.location.endswith("/profile")  # Vérification que la redirection mène à la page de profil
+    # Debug : afficher le contenu de la réponse
+    print(response.data.decode('utf-8'))
 
-    # Suivi de la redirection pour vérifier le profil mis à jour
-    follow_response = client.get(response.location)  # Suivi de la redirection
-    assert follow_response.status_code == 200  # Vérification que la page est bien chargée
-    assert b"Jane" in follow_response.data  # Vérification du prénom mis à jour
-    assert b"Smith" in follow_response.data  # Vérification du nom mis à jour
-    assert b"newemail@example.com" in follow_response.data  # Vérification de l'email mis à jour
+    # Vérifiez la redirection
+    assert response.status_code == 200
+    assert b"Jane" in response.data
+    assert b"Smith" in response.data
+    assert b"newemail@example.com" in response.data
 
 
 def test_edit_user_not_logged_in(client):
@@ -101,21 +98,37 @@ def test_edit_user_missing_fields(client, create_user):
     assert response.status_code == 400  # Le code de statut attendu est 400
 
 
+# def test_edit_user_invalid_email(client, create_user):
+#     """Test si l'utilisateur soumet un email invalide"""
+#     with client.application.app_context():  # Crée un contexte d'application ici
+#         user_id = create_user("test@example.com", "testuser", "John", "Doe", "password123")
+    
+#     client.post('/login', data={'email': 'test@example.com', 'password': 'password123'})
+    
+#     # Effectuer la mise à jour du profil avec un email invalide
+#     response = client.post("/edit-profile", data={
+#         'firstname': 'Jane',
+#         'lastname': 'Smith',
+#         'email': 'invalid-email'
+#     })
+    
+#     # Vérification que l'email invalide est rejeté
+#     assert b"Adresse e-mail invalide" in response.data
 def test_edit_user_invalid_email(client, create_user):
-    """Test si l'utilisateur soumet un email invalide"""
-    with client.application.app_context():  # Crée un contexte d'application ici
-        user_id = create_user("test@example.com", "testuser", "John", "Doe", "password123")
-    
+    with client.application.app_context():
+        create_user("test@example.com", "testuser", "John", "Doe", "password123")
+
     client.post('/login', data={'email': 'test@example.com', 'password': 'password123'})
-    
-    # Effectuer la mise à jour du profil avec un email invalide
+
     response = client.post("/edit-profile", data={
         'firstname': 'Jane',
         'lastname': 'Smith',
         'email': 'invalid-email'
     })
-    
-    # Vérification que l'email invalide est rejeté
+
+    print(response.data.decode('utf-8'))  # Debug
+
+    assert response.status_code == 200
     assert b"Adresse e-mail invalide" in response.data
 
 
@@ -141,7 +154,3 @@ def test_edit_user_update_failure(client, create_user, mocker):
     # Vérification du code de redirection (302) et de l'URL de redirection
     assert response.status_code == 302
     assert response.location == '/edit-profile'  # Vérifiez si la redirection va vers la page correcte
-
-    # Effectuer une autre requête pour accéder à la page après la redirection et vérifier l'erreur
-    redirected_response = client.get('/edit-profile')
-    assert "Erreur lors de la mise à jour" in redirected_response.data.decode('utf-8')

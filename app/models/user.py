@@ -27,6 +27,12 @@ class UserModel:
     def find_by_email(email):
         """Trouve un utilisateur par son email."""
         return current_app.db.users.find_one({"email": email})
+    
+    @staticmethod
+    def find_by_pseudonym(pseudonym):
+        """Trouve un utilisateur pas son pseudonym"""
+        return current_app.db.users.find_one({"pseudonym": pseudonym})
+
 
 # CONNEXION
     @staticmethod
@@ -118,3 +124,15 @@ class UserModel:
             {"_id": object_id},  # Filtre : utilisateur à mettre à jour
             {"$set": updated_data}  # Mises à jour à appliquer
         )
+
+    @staticmethod
+    def count_users():
+        """Compter le nombre total d'utilisateurs inscrits."""
+        return current_app.db.users.count_documents({})
+    # print(UserModel.count_users())
+
+    @staticmethod
+    def count_active_users():
+        """Compter le nombre total d'utilisateurs actifs."""
+        return current_app.db.users.count_documents({"is_active": True})
+    

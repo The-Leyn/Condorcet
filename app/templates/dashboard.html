@@ -19,6 +19,7 @@
 
     <section class="articles">
       <p>Les 10 scrutins avec le plus de participants</p>
+      {% for scrutin in top_scrutins %}
       <article class="scrutin">
         <div class="title-accordeon">
           <p>Quel type de musique préférez-vous écouter ?</p>
@@ -29,6 +30,7 @@
           </div>
         </div>
       </article>
+      {% endfor %}
     </section>
   </main>
 </div>
