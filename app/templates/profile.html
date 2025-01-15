@@ -37,9 +37,9 @@
         <label for="scrutin-{{ loop.index }}" class="title-accordeon">
           <p>{{ scrutin.title }}</p>
           <div class="scrutin-info">
-            <p>Créer le <span> {{ scrutin.created_at.strftime("%d/%m/%Y %H:%M:%S") }} </span> - Fin le <span> {{ scrutin.start_date.strftime("%d/%m/%Y %H:%M:%S") }} </span></p>
+            <p>Créer le <span> {{ scrutin.created_at.strftime("%d/%m/%Y") }} </span> - Fin le <span> {{ scrutin.end_date.strftime("%d/%m/%Y") }} </span></p>
             <p>Par <span> @{{ scrutin.creator_pseudonym }}</span></p>
-            <p><span><img class="icon" src="{{ url_for('static', filename='assets/svg/user.svg') }}" alt=""></span><span>24 </span> participants</p>
+            <p><span><img class="icon" src="{{ url_for('static', filename='assets/svg/user.svg') }}" alt=""></span><span>{{ scrutin.votes|length }} </span> participants</p>
           </div>
           <button><img src="{{ url_for('static', filename='assets/svg/down-arrow.svg') }}" alt=""></button>
         </label>

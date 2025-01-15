@@ -5,6 +5,29 @@ from bson.objectid import ObjectId
 
 class ScrutinModel:
     @staticmethod
+    def find_all_scrutin():
+        """Récupérer tous les scrutins."""
+        scrutins = list(
+            current_app.db.users.aggregate([
+                {"$unwind": "$scrutin"},  # $unwind Permet de transformer chaque élément du tableau scrutin en un document distinct. Donc chaque scrutin est traité individuellement.
+                {"$match": {"scrutin.is_active": True}},
+                {"$sort": {"scrutin.created_at": -1}},  # Trier par date de création décroissante
+                {"$project": {  # Sélectionner uniquement les champs nécessaires
+                    "_id": 0,
+                    "scrutin_id": "$scrutin.scrutin_id",
+                    "title": "$scrutin.title",
+                    "description": "$scrutin.description",
+                    "created_at": "$scrutin.created_at",
+                    "start_date": "$scrutin.start_date",
+                    "end_date": "$scrutin.end_date",
+                    "options": "$scrutin.options",
+                    "votes": "$scrutin.votes",
+                    "creator_pseudonym": "$pseudonym" 
+                }}
+            ])
+        )
+        return scrutins
+    @staticmethod
     def find_10_last():
         """Récupérer les 10 derniers scrutins."""
         scrutins = list(
@@ -432,22 +455,22 @@ class ScrutinModel:
 
 
 
-class ScrutinModel:
+
     @staticmethod
-    def disableScrutinAsAdmin(scrutin_id, admin_id):
+    def disableScrutinAsAdmin(scrutin_id, user_id):
         """Désactive un scrutin si l'utilisateur est un administrateur."""
         
         if not scrutin_id:
             raise ValueError("L'identifiant du scrutin est requis pour désactiver un scrutin.")
 
         # Vérification du rôle admin
-        admin = current_app.db.users.find_one({"_id": ObjectId(admin_id)})
+        admin = current_app.db.users.find_one({"_id": ObjectId(user_id)})
         if not admin or admin.get('role') != 'admin':
             return {"message": "Accès refusé. Seuls les administrateurs peuvent désactiver les scrutins.", "success": False}
 
         # Mise à jour du scrutin dans le tableau des scrutins de l'utilisateur
         result = current_app.db.users.update_one(
-            {"scrutin.question_id": ObjectId(scrutin_id)},
+            {"scrutin.scrutin_id": ObjectId(scrutin_id)},
             {"$set": {"scrutin.$.is_active": False}}
         )
 

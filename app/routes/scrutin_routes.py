@@ -8,9 +8,11 @@ from datetime import datetime
 
 # Définir le blueprint
 scrutin_routes = Blueprint('scrutin', __name__)
-@scrutin_routes.route('/scrutins', methods=["GET"])
+@scrutin_routes.route('/scrutins/', methods=["GET"])
 def index_scrutin():
-    return render_template("home.html")
+    
+    scrutins = ScrutinModel.find_all_scrutin()
+    return render_template("scrutins.html", scrutins=scrutins, session=session)
 
 @scrutin_routes.route('/scrutins/add', methods=["GET", "POST"])
 def create_scrutin():
@@ -237,3 +239,20 @@ def result(scrutin_id):
         return render_template("results.html", scrutin_id=scrutin_id, result=result, session_user_id=user_id)
     else:
         return render_template("results.html", scrutin_id=scrutin_id, scrutin=scrutin, session_user_id=user_id)
+    
+@scrutin_routes.route('/deactivate_scrutin', methods=['POST'])
+def deactivate_scrutin():
+    """Désactive le compte de l'utilisateur connecté."""
+    if 'user_id' not in session:
+        return redirect(url_for('main.home'))
+    
+    user_id = session['user_id']  # Récupérer l'utilisateur connecté
+
+    if request.method == "POST":
+        scrutin_id = request.form.get('scrutin_id')
+
+        if scrutin_id:
+            success = ScrutinModel.disableScrutinAsAdmin(scrutin_id, user_id)
+            return redirect(url_for('scrutin.index_scrutin'))
+        else:
+            return redirect(url_for('scrutin.index_scrutin'))

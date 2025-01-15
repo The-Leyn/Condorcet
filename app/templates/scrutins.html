@@ -13,36 +13,43 @@
         <a href="" class="btn-border-anim">Créer un scrutin</a>
       </div>
     </div>
-
+    <pre>{{ session }}</pre>
     <section class="articles">
-      <span>16 scrutins</span>
+      <span>{{ scrutins|length }} scrutins</span>
+      {% for scrutin in scrutins %}
       <article class="scrutin">
-        <input type="checkbox" name="scrutin-1" id="scrutin-1">
-        <label for="scrutin-1" class="title-accordeon">
-          <p>Quel type de musique préférez-vous écouter ?</p>
+        <input type="checkbox" id="{{ loop.index }}">
+        <label for="{{ loop.index }}" class="title-accordeon">
+          <p>{{ scrutin.title }}</p>
           <div class="scrutin-info">
-            <p>Créer le <span> 18/12/2024 </span> - Fin le <span> 22/12/2024 </span></p>
-            <p>Par <span> @TheRealJhon</span></p>
-            <p><span><img class="icon" src="{{ url_for('static', filename='assets/svg/user.svg') }}" alt=""></span><span>24 </span> participants</p>
+            <p>Créer le <span> {{ scrutin.created_at.strftime("%d/%m/%Y") }} </span> - Fin le <span> {{ scrutin.end_date.strftime("%d/%m/%Y") }} </span></p>
+            <p>Par <span> @{{ scrutin.creator_pseudonym }}</span></p>
+            <p><span><img class="icon" src="{{ url_for('static', filename='assets/svg/user.svg') }}" alt=""></span><span>{{ scrutin.votes|length }} </span> participants</p>
           </div>
           <button><img src="{{ url_for('static', filename='assets/svg/down-arrow.svg') }}" alt=""></button>
         </label>
         <div class="content-accordeon">
-          <div class="scrutin-description"><p>Je vous propose de renseigner votre style de musique préféré parmis plusieurs choix.</p></div>
+          <div class="scrutin-description"><p>{{ scrutin.description }}</p></div>
           <div class="scrutin-bottom">
             <div class="choices">
-              <p>Vos choix :</p>
+              <p>Options :</p>
               <ul>
-                <li>Rock</li>
-                <li>Classique</li>
-                <li>Funk</li>
-                <li>Reggea</li>
+                {% for option in scrutin.options%}
+                <li>{{option}}</li>
+                {% endfor %}
               </ul>
             </div>
+            {% if session.user_role == "admin" %}
+              <form action="{{ url_for('scrutin.deactivate_scrutin') }}" method="post">
+                <input type="hidden" name="scrutin_id" value="{{scrutin.scrutin_id}}">
+                <button style="background: white; position: absolute; z-index: 2;">Désactiver</button>
+              </form>
+            {% endif %}
             <a href="" class="btn-border-anim">Participer</a>
           </div>
         </div>
       </article>
+      {% endfor %}
     </section>
   </main>
 {% endblock %}
