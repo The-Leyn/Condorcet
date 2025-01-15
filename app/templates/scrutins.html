@@ -10,7 +10,7 @@
       
       <div>
         <p>Bienvenue sur la page des scrutins ! Ici, vous trouverez toutes les propositions de votes publiées sur la plateforme. Parcourez-les, participez et faites entendre votre voix !</p>
-        <a href="" class="btn-border-anim">Créer un scrutin</a>
+        <a href="{{ url_for('scrutin.create_scrutin') }}" class="btn-border-anim">Créer un scrutin</a>
       </div>
     </div>
     <section class="articles">
@@ -24,8 +24,10 @@
             <p>Créer le <span> {{ scrutin.created_at.strftime("%d/%m/%Y") }} </span> - Fin le <span> {{ scrutin.end_date.strftime("%d/%m/%Y") }} </span></p>
             <p>Par <span> @{{ scrutin.creator_pseudonym }}</span></p>
             <p><span><img class="icon" src="{{ url_for('static', filename='assets/svg/user.svg') }}" alt="user"></span><span>{{ scrutin.votes|length }} </span> participants</p>
+            <p><span><img class="icon" src="{{ url_for('static', filename='assets/svg/user.svg') }}" alt="icon participant"></span><span>{{ scrutin.votes|length }} </span> participants</p>
           </div>
           <button class="down-arrow"><img src="{{ url_for('static', filename='assets/svg/down-arrow.svg') }}" alt="down-arrow"></button>
+          <button class="down-arrow"><img src="{{ url_for('static', filename='assets/svg/down-arrow.svg') }}" alt="afficher plus d'informations"></button>
         </label>
         <div class="content-accordeon">
           <div class="scrutin-description"><p>{{ scrutin.description }}</p></div>
