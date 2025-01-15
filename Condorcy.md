@@ -55,7 +55,7 @@ La sécurité de l'application ne fait pas partie du périmètre de la probléma
 
 ### Cas d'utilisation
 
-#### UC 1 : Accéder à la page d'accueil
+#### UC 1 : Accéder à la page d'accueil ✅
 
 > **En tant que** : Visiteur
 > **Je souhaite** : Afficher une page présentant la plate-forme
@@ -67,7 +67,7 @@ Sur la page d'accueil, hormis un petit texte d'explication, , on souhaite affich
 
 - La liste des 10 derniers scrutins actifs, c'est-à-dire pour lesquels des personnes ont voté
 
-#### UC 2 : S'inscrire sur la plate-forme
+#### UC 2 : S'inscrire sur la plate-forme ✅
 
 > **En tant que** : Visiteur
 > **Je souhaite** : M'enregistrer comme utilisateur de la plate-forme
@@ -77,7 +77,7 @@ Pour ce cas d'utiisation,on fera attention, naturellement, à ce que deux person
 
 Une fois la personne inscrite, on veut afficher un résumé de son profil.
 
-#### UC 3 : Modification du profil
+#### UC 3 : Modification du profil ✅
 
 > **En tant que** : Visiteur
 > **Je souhaite** : Modifier mes informations personnelles
@@ -85,7 +85,7 @@ Une fois la personne inscrite, on veut afficher un résumé de son profil.
 
 Une personne peut modiifer ses données personnelles, sauf son pseudonyme qui reste invariable.  Les nouvelles informations sont affichées en retour.
 
-#### UC 4 : Suppression du profil
+#### UC 4 : Suppression du profil ✅
 
 > **En tant que** : Visiteur
 > **Je souhaite** : Me désinscrire
@@ -93,7 +93,7 @@ Une personne peut modiifer ses données personnelles, sauf son pseudonyme qui re
 
 Les profils ne peuvent pas être complètement supprimés, car listorique des votes devrait être conservé. A tout le moins, les données personnelles de la personne devraient être effacées, sauf son pseudonyme, qui ne peut être réutilisé. Le profil sera marqué comme « fermé » et ne pourra plus être utilisé pour voter.
 
-#### UC 5 : Créer un scrutin
+#### UC 5 : Créer un scrutin ✅
 
 > **En tant que** : Utilisateur
 > **Je souhaite** : Créer une nouvelle consultation
@@ -103,7 +103,7 @@ Toute personne ayant un profil sur le site peut organiser un scrutin. Elle chois
 
 Tout scrutin doit avoir au moins deux options possibles :smile:.
 
-#### UC 5 : Modifier un scrutin
+#### UC 5 : Modifier un scrutin ✅
 
 > **En tant que** : Utilisateur
 > **Je souhaite** : Modifier le texte des consultations
@@ -111,7 +111,7 @@ Tout scrutin doit avoir au moins deux options possibles :smile:.
 
 Tant que le scrutin n'a pas été rendu public, avec une date d'ouverture, par exemple, les textes peuvent être modifiés. En revanche, le nombre d'options reste invariable.
 
-#### UC 6 : Participer à un scrutin
+#### UC 6 : Participer à un scrutin ✅
 
 > **En tant que** : Utilisateur
 > **Je souhaite** : Voter lors d'une consultation
@@ -123,7 +123,7 @@ En retour, on affichera à l'utilisateur ses choix dans l'ordre de ses préfére
 
 Un utilisateur peut omettre certains choix. Dans ce cas, ceux-ci seront considérés (à égalité) comme les moins préférés.
 
-#### UC 7 : Modifier un vote
+#### UC 7 : Modifier un vote ✅
 
 > **En tant que** : Utilisateur
 > **Je souhaite** : Changer d'avis à propos d'une question
@@ -133,7 +133,7 @@ On considère que, tant que le scrutin est ouvert, une personne peut revenir sur
 
 La personne devra être avertie qu'elle a déjà voté pour cette question.
 
-#### UC 8 : Afficher les résultats d'une consultation
+#### UC 8 : Afficher les résultats d'une consultation ✅
 
 > **En tant que** : Participant
 > **Je souhaite** : Visualiser les résultas d'une consultation
@@ -141,7 +141,7 @@ La personne devra être avertie qu'elle a déjà voté pour cette question.
 
 Une fois que le scrutin est fermé, les résultats sont disponibles pour la publication. Je peux donc accéder à la liste des scrutins qui sont fermés et afficher les options dans l'ordre de préférence, tel que calculé par l'algorithme. L'option préférée parmi toutes devra être mise en exergue.
 
-#### UC 9 : Dépouiller un scrutin
+#### UC 9 : Dépouiller un scrutin ✅
 
 > **En tant que** : Organisateur
 > **Je souhaite** : Visualiser les scrutin autou d'un thème donné
@@ -151,7 +151,7 @@ En donnant son pseudonyme, la plate-forme devrait pouvoir afficher la liste des 
 
 En cliquant sur un bouton, l'organisateur peut lancer la procédure de dépouillement et les résultats lui sont affichés.
 
-#### UC 10 : Modérer un scrutin
+#### UC 10 : Modérer un scrutin ✅
 
 > **En tant que** : Administrateur
 > **Je souhaite** : Modérer une consultation
@@ -159,7 +159,7 @@ En cliquant sur un bouton, l'organisateur peut lancer la procédure de dépouill
 
 Certaines personnes, qui ont un « rôle » d'administrateur, doivent pouvoir désactiver un scrutin, si celui-ci n'était pas conforme aux conditions d'utilisation, par exemple.
 
-#### UC 11 : Afficher de statistiques
+#### UC 11 : Afficher de statistiques ✅
 
 > **En tant que** : Administrateur
 > **Je souhaite** : Visualiser les statistiques d'utilisation de la plate-forme
@@ -265,7 +265,7 @@ Votre rendu final prendra la forme d’une **archive Zip** et devra comporter to
 
 Votre code devra être correctement commenté, c'est-à-dire contenir des **DocStrings** Python permettant l'engendrement automatique de la documentation technique.
 
-En option, des tests seraient bienvenus.
+En option, des tests seraient bienvenus. ✅
 
 ## Ressources
 

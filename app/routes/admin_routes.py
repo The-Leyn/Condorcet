@@ -30,5 +30,5 @@ def dashboard():
     active_user_count = UserModel.count_active_users()  # Nombre d'utilisateurs actifs
 
     # Passer les scrutins et la moyenne des options au template
-    return render_template("dashboard.html", scrutins=scrutins, average_options=average_options, users=users, user_count=user_count, active_user_count=active_user_count, top_scrutins=top_scrutins)
+    return render_template("dashboard.html", total_scrutins=total_scrutins, scrutins=scrutins, average_options=average_options, users=users, user_count=user_count, active_user_count=active_user_count, top_scrutins=top_scrutins)
 

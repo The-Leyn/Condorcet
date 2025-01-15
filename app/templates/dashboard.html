@@ -6,10 +6,10 @@
 <div class="dashboard-container">
   <aside>
     <div class="dashboard-info">
-      <p><span>234</span> Scrutins au total</p>
-      <p><span>4</span> Options en moyenne par scrutin</p>
-      <p><span>34</span> Utilisateurs inscrit</p>
-      <p><span>31</span> Utilisateurs actif</p>
+      <p><span>{{ total_scrutins}}</span> Scrutins au total</p>
+      <p><span>{{ average_options }}</span> Options en moyenne par scrutin</p>
+      <p><span>{{ user_count }}</span> Utilisateurs inscrit</p>
+      <p><span>{{ active_user_count }}</span> Utilisateurs actif</p>
     </div>
   </aside>
   <main>
@@ -22,11 +22,11 @@
       {% for scrutin in top_scrutins %}
       <article class="scrutin">
         <div class="title-accordeon">
-          <p>Quel type de musique préférez-vous écouter ?</p>
+          <p>{{ scrutin.title}}</p>
           <div class="scrutin-info">
-            <p>Créer le <span> 18/12/2024 </span> - Fin le <span> 22/12/2024 </span></p>
-            <p>Par <span> @TheRealJhon</span></p>
-            <p><span><img class="icon" src="{{ url_for('static', filename='assets/svg/user.svg') }}" alt="icon participants"></span><span>24 </span> participants</p>
+            <p>Créer le <span> {{ scrutin.created_at.strftime("%d/%m/%Y") }} </span> - Fin le <span>{{ scrutin.end_date.strftime("%d/%m/%Y") }} </span></p>
+            <p>Par <span> @{{ scrutin.creator_pseudonym }}</span></p>
+            <p><span><img class="icon" src="{{ url_for('static', filename='assets/svg/user.svg') }}" alt="user"></span><span>{{ scrutin.participants_count }} </span> participants</p>
           </div>
         </div>
       </article>
