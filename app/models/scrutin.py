@@ -1,6 +1,8 @@
 from flask import current_app
 from datetime import datetime
 from bson.objectid import ObjectId
+
+
 class ScrutinModel:
     @staticmethod
     def find_10_last():
@@ -427,3 +429,32 @@ class ScrutinModel:
         if scrutin is None:
             return None
         return scrutin
+
+
+
+class ScrutinModel:
+    @staticmethod
+    def disableScrutinAsAdmin(scrutin_id, admin_id):
+        """Désactive un scrutin si l'utilisateur est un administrateur."""
+        
+        if not scrutin_id:
+            raise ValueError("L'identifiant du scrutin est requis pour désactiver un scrutin.")
+
+        # Vérification du rôle admin
+        admin = current_app.db.users.find_one({"_id": ObjectId(admin_id)})
+        if not admin or admin.get('role') != 'admin':
+            return {"message": "Accès refusé. Seuls les administrateurs peuvent désactiver les scrutins.", "success": False}
+
+        # Mise à jour du scrutin dans le tableau des scrutins de l'utilisateur
+        result = current_app.db.users.update_one(
+            {"scrutin.question_id": ObjectId(scrutin_id)},
+            {"$set": {"scrutin.$.is_active": False}}
+        )
+
+        if result.matched_count > 0:
+            if result.modified_count > 0:
+                return {"message": "Scrutin désactivé avec succès.", "success": True}
+            else:
+                return {"message": "Le scrutin était déjà désactivé.", "success": False}
+        else:
+            return {"message": "Scrutin introuvable.", "success": False}
