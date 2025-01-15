@@ -101,3 +101,20 @@ class UserModel:
             }
         )
         return result.modified_count > 0  # Retourne True si la mise à jour a été effectuée
+    
+# MODIFICATION
+    @staticmethod
+    def update_user(user_id, updated_data):
+        """Met à jour les informations d'un utilisateur."""
+        object_id = ObjectId(user_id)
+        
+        # Vérifie si l'utilisateur existe
+        user = current_app.db.users.find_one({"_id": object_id})
+        if not user:
+            raise ValueError("Utilisateur non trouvé.")
+
+        # Met à jour les champs dans la base de données
+        current_app.db.users.update_one(
+            {"_id": object_id},  # Filtre : utilisateur à mettre à jour
+            {"$set": updated_data}  # Mises à jour à appliquer
+        )

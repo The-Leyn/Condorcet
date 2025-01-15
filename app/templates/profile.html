@@ -15,7 +15,7 @@
       <p><span><img class="icon" src="{{ url_for('static', filename='assets/svg/mail.svg') }}" alt=""></span>{{ user.email }}</p>
     </div>
     <div class="profil-actions">
-      <a href=""><span><img class="icon" src="{{ url_for('static', filename='assets/svg/edit.svg') }}" alt="edit"></span>Modifier vos informations</a>
+      <a href="{{ url_for('user.edit_user') }}"><span><img class="icon" src="{{ url_for('static', filename='assets/svg/edit.svg') }}" alt="edit"></span>Modifier vos informations</a>
       <a href="{{ url_for('user.logout') }}"><span><img class="icon" src="{{ url_for('static', filename='assets/svg/quit.svg') }}" alt="logout"></span>Déconnexion</a>
       <form action="{{ url_for('user.deactivate_account') }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir désactiver votre compte ?')">
         <button type="submit" class="btn btn-danger"><span><img class="icon" src="{{ url_for('static', filename='assets/svg/trash.svg') }}" alt="trash"></span>Désactiver mon compte</button>

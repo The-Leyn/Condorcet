@@ -4,6 +4,7 @@ from app.models.user import UserModel
 from werkzeug.security import generate_password_hash
 from app.models.scrutin import ScrutinModel
 from datetime import datetime
+import re
 
 # Définir le blueprint
 user_routes = Blueprint('user', __name__)
@@ -131,3 +132,59 @@ def deactivate_account():
         return redirect(url_for('user.login'))
     else:
         return redirect(url_for('user.profile'))
+    
+
+
+@user_routes.route("/edit-profile", methods=["GET", "POST"])
+def edit_user():
+    def is_valid_email(email):
+        """Valide l'adresse e-mail."""
+        email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+        return re.match(email_regex, email) is not None
+    """Modifier le profil de l'utilisateur."""
+    if 'user_id' not in session:
+        return redirect(url_for('user.login'))
+    
+    user_id = session.get('user_id')
+    user = UserModel.find_by_id_user(user_id)
+    
+    if not user:
+        return jsonify({"error": "Utilisateur non trouvé"}), 404
+
+    if request.method == "GET":
+        # Affiche le formulaire avec les données actuelles
+        return render_template("edit_user.html", user=user)
+
+    if request.method == "POST":
+        # Récupérer les nouvelles données
+        firstname = request.form.get("firstname")
+        lastname = request.form.get("lastname")
+        email = request.form.get("email")
+
+        # Validation des champs requis
+        if not firstname or not lastname or not email:
+            error_message = "Veuillez remplir tous les champs."
+            print(error_message, "error")
+            return jsonify({"error": error_message}), 400  # Retourne un code 400 pour les champs manquants
+
+        # Validation de l'email
+        if not is_valid_email(email):
+            error_message = "Adresse e-mail invalide"
+            print(error_message, "error")
+            return render_template("edit_user.html", user=user, error=error_message)
+
+        try:
+            # Mise à jour des données dans la base
+            updated_data = {
+                "firstname": firstname,
+                "lastname": lastname,
+                "email": email
+            }
+            UserModel.update_user(user_id, updated_data)
+            
+            # Message de succès et redirection
+            print("Profil mis à jour avec succès.", "success")
+            return redirect(url_for('user.get_user_profile'))
+        except Exception as e:
+            print(f"Une erreur est survenue : {str(e)}", "error")
+            return redirect(url_for('user.edit_user'))
