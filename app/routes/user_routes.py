@@ -8,6 +8,9 @@ import re
 
 # Définir le blueprint
 user_routes = Blueprint('user', __name__)
+@user_routes.context_processor
+def inject_now():
+    return {'now': datetime.now}
 
 @user_routes.route('/users', methods=['GET'])
 def get_users():

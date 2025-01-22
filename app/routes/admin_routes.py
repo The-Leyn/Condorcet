@@ -1,8 +1,12 @@
 from flask import flash, current_app, Blueprint, jsonify, render_template, request, jsonify, redirect, url_for, session
 from app.models.scrutin import ScrutinModel
 from app.models.user import UserModel
+from datetime import datetime
 
 admin_routes = Blueprint('admin', __name__)
+@admin_routes.context_processor
+def inject_now():
+    return {'now': datetime.now}
 
 @admin_routes.route('/dashboard/', methods=["GET"])
 def dashboard():

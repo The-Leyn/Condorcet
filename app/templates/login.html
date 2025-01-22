@@ -17,8 +17,8 @@
         <p class="error">{{ error }}</p>
         {% endif %}
         <form action="{{ url_for('user.login') }}" method="POST">
-            <input type="text" id="email" name="email" placeholder="VOTRE EMAIL*" required="required" value="admin@email.com">
-            <input type="password" id="password" name="password" placeholder="MOT DE PASSE*" required="required" value="adminPassword">
+            <input type="text" id="email" name="email" placeholder="VOTRE EMAIL*" required="required">
+            <input type="password" id="password" name="password" placeholder="MOT DE PASSE*" required="required">
             
             <button class="btn-border-anim" type="submit">Se connecter</button>
         </form>
