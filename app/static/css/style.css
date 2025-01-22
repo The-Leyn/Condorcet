@@ -282,7 +282,7 @@ a {
   aside {
     color: #FFFFFF;
     display: flex;
-    position: fixed;
+    /* position: fixed; */
     flex-direction: column;
     justify-content: space-between;
     height: 80vh;
@@ -354,9 +354,12 @@ a {
   }
 
   main {
-    margin-left: 340px;
-    display: flex;
-    flex-direction: column;
+    /* margin-left: 340px; */
+    /* display: flex; */
+    /* flex-direction: column; */
+    box-sizing: border-box;
+    height: 80vh;
+    overflow-y: auto;
     color: #FFFFFF;
     width: 100%;
     gap: 20px;
@@ -407,13 +410,14 @@ a {
       }
 
       & .btn-create-scrutin {
-        margin: 30px 0px 30px 4px;
+        margin: 30px 0px;
         width: 100%;
+
+        a {
+          margin-left: 4px;
+        }
       }
     }
-
-
-
   }
 
 
@@ -422,10 +426,6 @@ a {
     width: 24px;
     height: 24px;
   }
-}
-
-.dashboard-container > main {
-  margin-left: 420px;
 }
 
 .scrutin-top {
@@ -472,7 +472,6 @@ a {
   flex-direction: column;
   gap: 20px;
   color: #FFFFFF;
-  width: 100%;
 
   > span {
     color: var(--PrimaryColor);
